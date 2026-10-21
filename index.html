@@ -2560,6 +2560,53 @@ button.summary-fix-count{font-size:13px!important;padding:8px 12px!important;whi
 .lg-extras .league-check-wrap{padding:0!important;margin:0!important;max-width:none!important}
 @media (max-width:760px){.lg-extras{padding:0 14px}}
 
+/* Game Day: Exposure card */
+.xp-wrap{max-width:1320px;margin:16px auto 0;padding:0 24px}
+.xp-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius,16px);padding:14px}
+.xp-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.xp-title{font:800 19px 'Inter',sans-serif;color:var(--text);letter-spacing:-.02em}
+.xp-tabs{display:flex;gap:4px;padding:4px;background:var(--surface2);border:1px solid var(--line);border-radius:12px}
+.xp-tabs button{min-height:38px;padding:0 14px;border:none;border-radius:9px;background:transparent;color:var(--text-dim);font:700 14px 'Inter',sans-serif;cursor:pointer;white-space:nowrap}
+.xp-tabs button.on{background:var(--surface);color:var(--text);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.xp-count{font-weight:800;margin-left:2px;opacity:.85}
+.xp-sub{font:500 12.5px 'Inter',sans-serif;color:var(--text-dim);margin:8px 2px 6px}
+.xp-row{border-top:1px solid var(--line)}
+.xp-row:first-child{border-top:none}
+.xp-row>summary{display:flex;align-items:center;gap:10px;padding:10px 2px;list-style:none;cursor:pointer;min-height:54px}
+.xp-row>summary::-webkit-details-marker{display:none}
+.xp-row .pos-tag{width:36px!important;flex-shrink:0}
+.xp-name{flex:1;min-width:0;font:700 15.5px 'Inter',sans-serif;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xp-name small{display:block;font:500 12px 'Inter',sans-serif;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xp-also{font-weight:700;color:var(--warn)}
+.xp-n{flex-shrink:0;display:flex;flex-direction:column;align-items:center;min-width:46px;padding:4px 8px;border-radius:10px;font:800 18px/1 'Inter',sans-serif;font-variant-numeric:tabular-nums}
+.xp-n small{font:600 9.5px 'Inter',sans-serif;opacity:.8;margin-top:2px}
+.xp-row.for .xp-n{color:var(--good);background:var(--good-soft)}
+.xp-row.against .xp-n{color:var(--bad);background:var(--bad-soft)}
+.xp-caret{color:var(--text-dim);transition:transform .15s;flex-shrink:0}
+.xp-row[open] .xp-caret{transform:rotate(180deg)}
+.xp-leagues{display:flex;flex-direction:column;gap:6px;padding:0 2px 12px 48px}
+.xp-lg{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 12px;border-radius:10px;background:var(--surface2);border:1px solid var(--line);color:var(--text);text-decoration:none;font:600 13.5px 'Inter',sans-serif}
+.xp-lg small{color:var(--text-dim);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.xp-row.for .xp-lg{box-shadow:inset 3px 0 0 var(--good)}
+.xp-row.against .xp-lg{box-shadow:inset 3px 0 0 var(--bad)}
+.xp-empty{font:500 13.5px 'Inter',sans-serif;color:var(--text-dim);padding:14px 2px}
+.xp-more{width:100%;margin-top:8px;min-height:42px;border-radius:12px;border:1px solid var(--line-strong);background:transparent;color:var(--text);font:600 14px 'Inter',sans-serif;cursor:pointer}
+/* game picker and older lists fold away */
+.gf-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;list-style:none}
+.gf-summary::-webkit-details-marker{display:none}
+.gf-summary .game-filter-title{font-size:15px!important}
+.gf-count{font:600 12.5px 'Inter',sans-serif;color:var(--text-dim);white-space:nowrap}
+#gameFilterCard[open] .game-filter-actions{margin:10px 0}
+#gameFilterCard:not([open]) .game-filter-actions{display:none}
+.gd-grid{grid-template-columns:1fr!important}
+.gd-more{max-width:1320px;margin:16px auto 0;padding:0 24px}
+.gd-more>summary{cursor:pointer;list-style:none;padding:13px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius,14px);font:700 15px 'Inter',sans-serif;color:var(--text)}
+.gd-more>summary::-webkit-details-marker{display:none}
+.gd-more>summary small{display:block;font:500 12px 'Inter',sans-serif;color:var(--text-dim);margin-top:2px}
+.gd-more .importance-wrap,.gd-more .opponent-only-wrap{padding:0!important;max-width:none}
+.gd-more .safe-sidebar{width:auto!important;position:static!important;max-height:none!important;margin-top:16px}
+@media (max-width:760px){.xp-wrap,.gd-more{padding:0 14px}.xp-head{flex-direction:column;align-items:stretch}.xp-tabs button{flex:1}}
+
 /* Waiver refresh bar */
 .wv-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius,14px)}
 .wv-info{min-width:0}
@@ -2954,16 +3001,14 @@ button.summary-fix-count{font-size:13px!important;padding:8px 12px!important;whi
 
 
   <div class="game-filter-wrap" id="gameFilterWrap">
-    <div class="game-filter-card">
-      <div class="game-filter-head">
-        <div class="game-filter-title">🎮 Select Games — <span id="gameFilterWeekLabel">Week 2</span></div>
-        <div class="game-filter-actions">
-          <button type="button" id="selectAllGamesBtn">Select All</button>
-          <button type="button" id="clearGamesBtn">Clear All</button>
-        </div>
+    <details class="game-filter-card" id="gameFilterCard">
+      <summary class="gf-summary"><span class="game-filter-title">🎮 Games counted — <span id="gameFilterWeekLabel">Week 2</span></span><span class="gf-count" id="gfCount"></span></summary>
+      <div class="game-filter-actions">
+        <button type="button" id="selectAllGamesBtn">Select All</button>
+        <button type="button" id="clearGamesBtn">Clear All</button>
       </div>
       <div class="game-filter-grid" id="gameFilterGrid"></div>
-    </div>
+    </details>
   </div>
 
   <div class="step-label" id="reviewStepLabel" style="display:none;">Step 3 — Fix flagged leagues first</div>
@@ -3054,6 +3099,17 @@ button.summary-fix-count{font-size:13px!important;padding:8px 12px!important;whi
     <div class="po-wrap" id="playoffWrap"><details class="po-card" id="playoffCard" open><summary>🏆 Playoff picture <span id="poSummary" class="po-summary"></span></summary><div id="playoffList"></div></details></div>
   </section>
   <section class="hq-panel" id="panel-gameday" role="tabpanel"><div class="tab-empty">Load your leagues to see who to root for, safe starters and your exposure.</div>
+    <div class="xp-wrap" id="xpWrap"><div class="xp-card">
+      <div class="xp-head">
+        <div class="xp-title">Exposure</div>
+        <div class="xp-tabs" role="tablist" aria-label="For or against">
+          <button type="button" role="tab" data-xp="for">🟢 For <span class="xp-count" id="xpForN"></span></button>
+          <button type="button" role="tab" data-xp="against">🔴 Against <span class="xp-count" id="xpAgN"></span></button>
+        </div>
+      </div>
+      <div class="xp-sub" id="xpSub"></div>
+      <div id="xpList"></div>
+    </div></div>
     <div class="live-wrap" id="liveWrap"><div class="live-card">
       <div class="live-head">
         <div><div class="live-title"><span class="live-dot2" id="liveDot"></span> Live scores</div>
@@ -3121,8 +3177,14 @@ button.summary-fix-count{font-size:13px!important;padding:8px 12px!important;whi
   ['leagueStepLabel', 'leagueCheckWrap', 'vegasNote', 'reviewStepLabel', 'legendRow', 'layoutRow'].forEach(id => move(id, 'panel-lineups'));
   // Game Day
   const gd = document.getElementById('panel-gameday'), grid = document.getElementById('gdGrid');
-  ['gameFilterWrap', 'importanceWrap', 'opponentOnlyWrap'].forEach(id => { const el = document.getElementById(id); if (el) gd.insertBefore(el, grid); });
-  ['safeStartersSidebar', 'overlapSidebar'].forEach(id => move(id, 'gdGrid'));
+  const gf = document.getElementById('gameFilterWrap'); if (gf) gd.insertBefore(gf, grid);
+  move('overlapSidebar', 'gdGrid');
+  // The Exposure card at the top covers these, so they wait in a closed section at the bottom.
+  const more = document.createElement('details');
+  more.className = 'gd-more';
+  more.innerHTML = '<summary>More breakdowns <small>most important · opponent-only · safe starters</small></summary>';
+  ['importanceWrap', 'opponentOnlyWrap', 'safeStartersSidebar'].forEach(id => { const el = document.getElementById(id); if (el) more.appendChild(el); });
+  gd.appendChild(more);
   // Trades / Waivers
   move('tradeWrap', 'panel-trades');
   move('waiverWrap', 'panel-waivers');
@@ -3857,6 +3919,7 @@ function buildGameFilters() {
 
   const weekLabel = document.getElementById('gameFilterWeekLabel');
   if (weekLabel) weekLabel.textContent = `Week ${weekSelect.value}`;
+  updateGameFilterCount();
 
   if (!currentWeekGames.length) {
     grid.innerHTML = '<div class="no-changes">Loading this week’s NFL games…</div>';
@@ -3873,6 +3936,10 @@ function buildGameFilters() {
   `).join('');
 }
 
+function updateGameFilterCount() {
+  const el = document.getElementById('gfCount');
+  if (el) el.textContent = currentWeekGames.length ? `${selectedGameKeys.size} of ${currentWeekGames.length} games` : '';
+}
 function wireGameFilterEvents() {
   const grid = document.getElementById('gameFilterGrid');
   const allBtn = document.getElementById('selectAllGamesBtn');
@@ -3883,6 +3950,7 @@ function wireGameFilterEvents() {
     selectedGameKeys = new Set(
       [...grid.querySelectorAll('input[type="checkbox"]:checked')].map(i => i.value)
     );
+    updateGameFilterCount();
     renderBoard();
   });
 
@@ -4478,6 +4546,7 @@ function renderActiveTab() {
     try { renderByeCard(); } catch (e) { console.warn('bye card', e); }
     renderLineupsBoard();
   } else if (tab === 'gameday') {
+    renderExposure();
     renderLiveBoard();
     renderMostImportantPlayers();
     renderOpponentOnlyExposure();
@@ -6080,8 +6149,83 @@ function renderRootScope() {
     <div class="rs-leagues">${names.length ? names.map(n => `<span class="league-chip-mini">${escapeHtml(n)}</span>`).join('') : 'No leagues match right now, so the lists below are empty.'}</div></div>
     <button type="button" class="rs-all" id="rootScopeAll">Show all leagues</button></div>`;
 }
+// ---------- Exposure: who you're rooting for and against, one line each ----------
+// For = your starters, Against = your opponents' starters, across the selected leagues and
+// games (and the Live filter, like the rest of Game Day). Tap a name for the leagues.
+const XP_SIDE_KEY = 'fantasy-hq-exposure-side-v1';
+let xpSide = 'for', xpShowAll = false;
+const xpOpen = new Set();
+try { if (localStorage.getItem(XP_SIDE_KEY) === 'against') xpSide = 'against'; } catch (_) {}
+function computeExposure() {
+  const by = {};
+  const add = (p, lg, side, opp) => {
+    if (!p || !p.id || !p.name || isForcedOut(p.name) || !gameIsSelectedForTeam(p.team)) return;
+    const e = by[p.id] = by[p.id] || { id: String(p.id), name: p.name, pos: p.pos || '', team: p.team || '', for: [], against: [] };
+    e[side].push({ lg, opp });
+  };
+  allLeagues.forEach(lg => {
+    if (!rootingHas(lg.league_id)) return;
+    const st = leagueState[lg.league_id];
+    if (!st || !Array.isArray(st.players)) return;
+    const oppName = st.opponent ? st.opponent.teamName : '';
+    st.players.filter(p => p.starting).forEach(p => add(p, lg, 'for', oppName));
+    ((st.opponent && st.opponent.players) || []).forEach(p => add(p, lg, 'against', oppName));
+  });
+  return Object.values(by);
+}
+function renderExposure() {
+  const list = document.getElementById('xpList');
+  if (!list || !currentUser) return;
+  const all = computeExposure();
+  const sideOf = s => all.filter(e => e[s].length).sort((a, b) => b[s].length - a[s].length || a.name.localeCompare(b.name));
+  const forL = sideOf('for'), agL = sideOf('against');
+  document.getElementById('xpForN').textContent = forL.length;
+  document.getElementById('xpAgN').textContent = agL.length;
+  document.querySelectorAll('#xpWrap [data-xp]').forEach(b => { const on = b.dataset.xp === xpSide; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  const rows = xpSide === 'for' ? forL : agL, other = xpSide === 'for' ? 'against' : 'for';
+  document.getElementById('xpSub').textContent = xpSide === 'for'
+    ? 'Players you start. Tap one to see the leagues.'
+    : 'Players starting against you. Tap one to see the leagues.';
+  if (!rows.length) {
+    list.innerHTML = `<div class="xp-empty">${xpSide === 'for' ? 'No starters in the games you have counted.' : 'No opponent starters in the games you have counted.'}</div>`;
+    return;
+  }
+  const LIMIT = 25, shown = xpShowAll ? rows : rows.slice(0, LIMIT);
+  list.innerHTML = shown.map(e => {
+    const leagues = e[xpSide], also = e[other].length;
+    const g = teamGame(e.team);
+    const when = g ? (g.state === 'pre' ? formatKickoff(g.kickoff) : (g.detail || '')) : '';
+    return `<details class="xp-row ${xpSide}" data-xp-id="${escapeHtml(e.id)}"${xpOpen.has(xpSide + e.id) ? ' open' : ''}>
+      <summary>
+        <span class="pos-tag" data-pos="${escapeHtml(e.pos)}">${escapeHtml(e.pos)}</span>
+        <span class="xp-name">${escapeHtml(e.name)}<small>${escapeHtml(e.team)}${when ? ' · ' + escapeHtml(when) : ''}${also ? ` · <b class="xp-also">${xpSide === 'for' ? 'faces you' : 'you start him'} in ${also}</b>` : ''}</small></span>
+        <span class="xp-n">${leagues.length}<small>league${leagues.length === 1 ? '' : 's'}</small></span>
+        <span class="xp-caret" aria-hidden="true">▾</span>
+      </summary>
+      <div class="xp-leagues">${leagues.map(r => `<a class="xp-lg" href="https://sleeper.com/leagues/${escapeHtml(r.lg.league_id)}" target="_blank" rel="noopener"><span>${escapeHtml(r.lg.name)}</span>${r.opp ? `<small>vs ${escapeHtml(r.opp)}</small>` : ''}</a>`).join('')}</div>
+    </details>`;
+  }).join('') + (rows.length > LIMIT ? `<button type="button" class="xp-more" id="xpMore">${xpShowAll ? 'Show fewer' : `Show all ${rows.length}`}</button>` : '');
+}
+document.getElementById('xpWrap').addEventListener('click', e => {
+  const tab = e.target.closest('[data-xp]');
+  if (tab) {
+    xpSide = tab.dataset.xp; xpShowAll = false;
+    try { localStorage.setItem(XP_SIDE_KEY, xpSide); } catch (_) {}
+    renderExposure();
+    return;
+  }
+  if (e.target.id === 'xpMore') { xpShowAll = !xpShowAll; renderExposure(); }
+});
+// Remember which players are opened so live score refreshes don't snap them shut.
+document.getElementById('xpList').addEventListener('toggle', e => {
+  const row = e.target.closest && e.target.closest('[data-xp-id]');
+  if (!row) return;
+  const k = xpSide + row.dataset.xpId;
+  if (row.open) xpOpen.add(k); else xpOpen.delete(k);
+}, true);
 function renderRootingViews() {
   rootingQueued = false;
+  renderExposure();
   renderMostImportantPlayers();
   renderOpponentOnlyExposure();
   renderSafeStartersSidebar();
