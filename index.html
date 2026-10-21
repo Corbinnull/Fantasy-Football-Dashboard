@@ -2414,6 +2414,41 @@ body.hq-loaded:not(.show-picker) #leagueCheckWrap{display:none!important}
 html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 .offline-bar{display:none;position:sticky;top:0;z-index:60;background:var(--warn-soft);color:var(--warn);border-bottom:1px solid var(--line);text-align:center;font:600 12.5px 'Inter',sans-serif;padding:6px 12px}
 body.is-offline .offline-bar{display:block}
+
+/* ================= QUICK PLAYER SEARCH ================= */
+.ab-search{font-size:16px;line-height:1}
+@media (max-width:420px){.ab-user{max-width:112px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ab-right{gap:6px}}
+.ps-sheet{position:fixed;inset:0;z-index:80;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+.ps-sheet[hidden]{display:none}
+body.ps-open{overflow:hidden}
+.ps-head{display:flex;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);max-width:860px;width:100%;margin:0 auto}
+.ps-head input{flex:1;min-width:0;background:var(--input);color:var(--text);border:1px solid var(--line-strong);border-radius:12px;padding:12px 14px;font:500 16px 'Inter',sans-serif;outline:none}
+.ps-close{background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 14px;font:600 14px 'Inter',sans-serif;cursor:pointer;min-height:44px}
+.ps-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 16px calc(24px + env(safe-area-inset-bottom));max-width:860px;width:100%;margin:0 auto}
+.ps-hint{font:500 13px 'Inter',sans-serif;color:var(--text-dim);line-height:1.5;padding:6px 2px 12px}
+.ps-picks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.ps-pick{background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font:600 13px 'Inter',sans-serif;cursor:pointer}
+.ps-pick.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.ps-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.ps-name{font:700 18px 'Inter',sans-serif;color:var(--text);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ps-meta{font:500 12.5px 'Inter',sans-serif;color:var(--text-dim)}
+.ps-verdict{font:600 13px 'Inter',sans-serif;margin:8px 0 10px;color:var(--text)}
+.ps-verdict b.for{color:var(--good)} .ps-verdict b.against{color:var(--bad)}
+.ps-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.ps-stat{border:1px solid var(--line);border-radius:10px;padding:8px 6px;text-align:center;background:var(--surface2)}
+.ps-stat .n{font:800 20px 'Inter',sans-serif;font-variant-numeric:tabular-nums}
+.ps-stat .l{font:600 10.5px 'Inter',sans-serif;color:var(--text-dim);margin-top:2px}
+.ps-stat.start .n{color:var(--good)} .ps-stat.vs .n{color:var(--bad)}
+.ps-stat.zero{opacity:.45}
+.ps-group{margin-top:10px}
+.ps-group-title{font:700 11px 'Inter',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px}
+.ps-row{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:6px;background:var(--surface2);font:500 13.5px 'Inter',sans-serif;color:var(--text);text-decoration:none}
+.ps-row.start{box-shadow:inset 3px 0 0 var(--good)} .ps-row.vs{box-shadow:inset 3px 0 0 var(--bad)} .ps-row.bench{box-shadow:inset 3px 0 0 var(--line-strong)}
+.ps-row small{display:block;color:var(--text-dim);font-size:12px;margin-top:2px}
+.ps-row .go{color:var(--info);font-size:12.5px;white-space:nowrap}
+.ps-empty{font:500 13.5px 'Inter',sans-serif;color:var(--text-dim);padding:18px 4px;text-align:center}
+.ps-open-btn{display:flex;align-items:center;gap:8px;width:100%;margin:0 0 10px;background:var(--input);color:var(--text-dim);border:1px solid var(--line-strong);border-radius:12px;padding:12px 14px;font:500 15px 'Inter',sans-serif;cursor:pointer;text-align:left}
+@media (max-width:420px){.ps-stat .n{font-size:18px}.ps-stat .l{font-size:10px}}
 </style>
 
 
@@ -2684,6 +2719,7 @@ body.is-offline .offline-bar{display:block}
       <div id="safeStartersList"><div class="no-changes">Load your leagues to calculate.</div></div>
     </aside>
     <div class="main-col">
+      <button type="button" class="ps-open-btn" data-open-search>🔎 Search a player — who you start, bench and face</button>
       <div class="board-filter" id="boardFilter" style="display:none;" role="tablist" aria-label="Filter leagues">
         <button type="button" data-filter="all">All <span class="bf-count">0</span></button>
         <button type="button" data-filter="action" class="bf-action">⚠ Needs action <span class="bf-count">0</span></button>
@@ -2695,11 +2731,8 @@ body.is-offline .offline-bar{display:block}
     </div>
     <aside class="overlap-sidebar" id="overlapSidebar">
       <div class="sidebar-title">🔎 Search Player</div>
-      <div class="sidebar-sub">Type a player to see every selected league where he is in your lineup, on your bench, in an opponent's lineup, or on an opponent's bench.</div>
-      <div class="player-search-box">
-        <input id="playerSearchInput" type="text" placeholder="Search player..." autocomplete="off">
-        <div id="playerSearchResults" class="player-search-results"><div class="no-changes">Type a player name.</div></div>
-      </div>
+      <div class="sidebar-sub">See every selected league where a player is starting or benched for you, or starting or benched against you. Also on the 🔎 button at the top of every screen.</div>
+      <button type="button" class="ps-open-btn" data-open-search>🔎 Search a player…</button>
       <div style="height:4px"></div>
       <div class="sidebar-title">🏈 Game Rooting Guide</div>
       <div class="sidebar-sub">Games are ordered by kickoff. Net = AGAINST − FOR for each player; equal exposure cancels to 0 and is hidden.</div>
@@ -2722,6 +2755,7 @@ body.is-offline .offline-bar{display:block}
     <div class="ab-right">
       <span class="ab-rec" id="abRec" title="Combined record across selected leagues"></span>
       <select id="abWeek" class="ab-week" aria-label="Week"></select>
+      <button type="button" class="ab-btn ab-search" id="abSearch" title="Search a player" aria-label="Search a player">🔎</button>
       <button type="button" class="ab-btn" id="abReload" title="Reload leagues" aria-label="Reload leagues">⟳</button>
       <button type="button" class="ab-user" id="abUser" title="Change user / season"></button>
     </div>
@@ -2734,6 +2768,14 @@ body.is-offline .offline-bar{display:block}
   <button role="tab" data-tab="waivers"><span class="t-ico">🧲</span><span class="t-lbl">Waivers</span><span class="t-badge" id="badge-waivers"></span></button>
   <button role="tab" data-tab="settings"><span class="t-ico">⚙️</span><span class="t-lbl">Settings</span><span class="t-badge" id="badge-settings"></span></button>
 </nav>
+<div class="ps-sheet" id="psSheet" role="dialog" aria-modal="true" aria-label="Search a player" hidden>
+  <div class="ps-head">
+    <input id="psInput" type="search" list="psNames" placeholder="Search any player…" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="search">
+    <button type="button" class="ps-close" id="psClose">Close</button>
+  </div>
+  <datalist id="psNames"></datalist>
+  <div class="ps-body" id="psBody"></div>
+</div>
 <main class="hq-panels">
   <section class="hq-panel" id="panel-lineups" role="tabpanel"><div class="tab-empty">Load your Sleeper leagues above to see your lineups.</div>
     <div class="po-wrap" id="playoffWrap"><details class="po-card" id="playoffCard" open><summary>🏆 Playoff picture <span id="poSummary" class="po-summary"></span></summary><div id="playoffList"></div></details></div>
@@ -6627,6 +6669,131 @@ function renderChanges(lid) {
 }
 </script>
 
+
+<script>
+// ================= QUICK PLAYER SEARCH =================
+// One tap from anywhere (🔎 in the top bar): every selected league where a player is
+// starting or benched for you, or starting or benched against you this week.
+// Unlike the old Game Day box, this ignores the game filter so nobody goes missing.
+let psPicked = null;
+const psSheet = document.getElementById('psSheet');
+const psInput = document.getElementById('psInput');
+const psBody = document.getElementById('psBody');
+function psIsOpen() { return !psSheet.hidden; }
+function psCollect() {
+  const byId = {};
+  const add = (p, lg, kind, opp) => {
+    if (!p || !p.id || !p.name) return;
+    const e = byId[p.id] = byId[p.id] || { id: String(p.id), name: p.name, pos: p.pos || '', team: p.team || '', start: [], bench: [], vs: [], oppBench: [] };
+    e[kind].push({ lg, opp, pts: Number(p.points) || 0, planned: kind === 'start' ? !p.wasStarting : kind === 'bench' ? !!p.wasStarting : false });
+  };
+  allLeagues.forEach(lg => {
+    if (!selectedLeagueIds.has(lg.league_id)) return;
+    const st = leagueState[lg.league_id];
+    if (!st || !Array.isArray(st.players)) return;
+    st.players.forEach(p => add(p, lg, p.starting ? 'start' : 'bench'));
+    const o = st.opponent;
+    if (o) {
+      (o.players || []).forEach(p => add(p, lg, 'vs', o.teamName));
+      (o.bench || []).forEach(p => add(p, lg, 'oppBench', o.teamName));
+    }
+  });
+  return Object.values(byId).map(e => ({ ...e, total: e.start.length + e.bench.length + e.vs.length + e.oppBench.length }));
+}
+function psRows(list, cls, label) {
+  if (!list.length) return '';
+  return `<div class="ps-group"><div class="ps-group-title">${label} · ${list.length}</div>${list.map(r => `
+    <a class="ps-row ${cls}" href="https://sleeper.com/leagues/${escapeHtml(r.lg.league_id)}" target="_blank" rel="noopener">
+      <span>${escapeHtml(r.lg.name)}<small>${r.opp ? 'vs ' + escapeHtml(r.opp) : ''}${r.opp && r.pts ? ' · ' : ''}${r.pts ? r.pts.toFixed(1) + ' pts' : ''}${r.planned ? (r.opp || r.pts ? ' · ' : '') + 'your planned change' : ''}</small></span>
+      <span class="go">Open →</span>
+    </a>`).join('')}</div>`;
+}
+function psCard(e) {
+  const status = availabilityLabel(e.name);
+  const badge = status !== 'Healthy' ? `<span class="out-badge">${escapeHtml(status.toUpperCase())}</span>` : '';
+  const s = e.start.length, b = e.bench.length, v = e.vs.length, ob = e.oppBench.length;
+  const net = s - v;
+  const verdict = !s && !v
+    ? 'Not in any starting lineup this week, only on benches.'
+    : net > 0 ? `Root <b class="for">FOR</b> him: you start him in ${s} league${s === 1 ? '' : 's'}${v ? `, face him in ${v}` : ''}.`
+    : net < 0 ? `Root <b class="against">AGAINST</b> him: he's starting against you in ${v} league${v === 1 ? '' : 's'}${s ? `, you start him in ${s}` : ''}.`
+    : `Even: you start him in ${s} and face him in ${v}, so his big game cancels out.`;
+  const stat = (n, l, cls) => `<div class="ps-stat ${cls}${n ? '' : ' zero'}"><div class="n">${n}</div><div class="l">${l}</div></div>`;
+  return `<div class="ps-card">
+    <div class="ps-name">${escapeHtml(e.name)} ${badge}</div>
+    <div class="ps-meta">${escapeHtml(e.pos)} · ${escapeHtml(e.team)} · in ${e.total} of your selected league${e.total === 1 ? '' : 's'}</div>
+    <div class="ps-verdict">${verdict}</div>
+    <div class="ps-stats">${stat(s, 'You start', 'start')}${stat(b, 'Your bench', 'bench')}${stat(v, 'Starts vs you', 'vs')}${stat(ob, 'Their bench', 'obench')}</div>
+    ${psRows(e.start, 'start', '🟢 Starting for you')}
+    ${psRows(e.vs, 'vs', '🔴 Starting against you')}
+    ${psRows(e.bench, 'bench', '⚪ On your bench')}
+    ${psRows(e.oppBench, 'bench', '⚫ On your opponent\'s bench')}
+  </div>`;
+}
+function renderPlayerSheet() {
+  if (!psIsOpen()) return;
+  if (!currentUser || !Object.keys(leagueState).length) {
+    psBody.innerHTML = '<div class="ps-empty">Your leagues are still loading. Give it a second.</div>';
+    return;
+  }
+  const all = psCollect();
+  document.getElementById('psNames').innerHTML = [...all].sort((a, b) => b.total - a.total || a.name.localeCompare(b.name))
+    .map(e => `<option value="${escapeHtml(e.name)}">${escapeHtml(e.pos)} · ${escapeHtml(e.team)}</option>`).join('');
+  const q = normalizeFantasyName(psInput.value);
+  const pick = list => `<div class="ps-picks">${list.map(e => `<button type="button" class="ps-pick${psPicked === e.id ? ' on' : ''}" data-ps-id="${e.id}" data-ps-name="${escapeHtml(e.name)}">${escapeHtml(e.name)} <span class="ps-meta">${e.start.length ? '🟢' + e.start.length : ''}${e.vs.length ? ' 🔴' + e.vs.length : ''}</span></button>`).join('')}</div>`;
+  if (!q) {
+    if (psPicked) { const e = all.find(x => x.id === psPicked); if (e) { psBody.innerHTML = psCard(e); return; } }
+    const top = [...all].sort((a, b) => (b.start.length + b.vs.length) - (a.start.length + a.vs.length) || b.total - a.total).slice(0, 16);
+    psBody.innerHTML = `<div class="ps-hint">Type a name, or tap one of the players who matter most to your week:</div>${pick(top)}`;
+    return;
+  }
+  const rank = e => { const n = normalizeFantasyName(e.name); return n === q ? 0 : n.startsWith(q) ? 1 : 2; };
+  const matches = all.filter(e => normalizeFantasyName(e.name).includes(q)).sort((a, b) => rank(a) - rank(b) || b.total - a.total || a.name.localeCompare(b.name));
+  if (!matches.length) {
+    psBody.innerHTML = `<div class="ps-empty">“${escapeHtml(psInput.value.trim())}” isn't on your roster or this week's opponents' rosters in your selected leagues.</div>`;
+    return;
+  }
+  const chosen = matches.find(e => e.id === psPicked) || matches[0];
+  psBody.innerHTML = (matches.length > 1 ? pick(matches.slice(0, 10)) : '') + psCard(chosen);
+}
+function openPlayerSheet(prefill) {
+  if (!psIsOpen()) {
+    psSheet.hidden = false;
+    document.body.classList.add('ps-open');
+    try { history.pushState({ ps: 1 }, ''); } catch (_) {}
+  }
+  if (typeof prefill === 'string') { psInput.value = prefill; psPicked = null; }
+  renderPlayerSheet();
+  setTimeout(() => psInput.focus(), 30);
+}
+function closePlayerSheet(fromBack) {
+  if (!psIsOpen()) return;
+  psSheet.hidden = true;
+  document.body.classList.remove('ps-open');
+  psInput.blur();
+  if (!fromBack && history.state && history.state.ps) history.back();
+}
+document.getElementById('abSearch').addEventListener('click', () => openPlayerSheet());
+document.addEventListener('click', e => { if (e.target.closest('[data-open-search]')) openPlayerSheet(); });
+document.getElementById('psClose').addEventListener('click', () => closePlayerSheet());
+window.addEventListener('popstate', () => { if (psIsOpen()) closePlayerSheet(true); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && psIsOpen()) closePlayerSheet();
+  else if (e.key === '/' && !psIsOpen() && !/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '')) { e.preventDefault(); openPlayerSheet(); }
+});
+psInput.addEventListener('input', () => { psPicked = null; renderPlayerSheet(); });
+psInput.addEventListener('keydown', e => { if (e.key === 'Enter') psInput.blur(); });
+psBody.addEventListener('click', e => {
+  const b = e.target.closest('[data-ps-id]'); if (!b) return;
+  psPicked = b.dataset.psId;
+  if (!psInput.value.trim()) psInput.value = b.dataset.psName;
+  renderPlayerSheet();
+  psBody.scrollTop = 0;
+});
+// Keep the open sheet current when scores refresh or you make lineup changes.
+const _renderBoardBeforeSearch = renderBoard;
+renderBoard = function () { _renderBoardBeforeSearch.apply(this, arguments); renderPlayerSheet(); };
+</script>
 
 <script>
 // Installable app: offline shell + cached player list. Safe to skip when opened as a plain file.
