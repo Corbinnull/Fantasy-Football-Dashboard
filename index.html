@@ -2870,6 +2870,7 @@ body.ps-open{overflow:hidden}
     tabs.forEach(t => document.getElementById('panel-' + t).classList.toggle('on', t === tab));
     try { localStorage.setItem(TAB_KEY, tab); } catch (_) {}
     if (push && location.hash !== '#' + tab) history.replaceState(null, '', '#' + tab);
+    document.dispatchEvent(new CustomEvent('hq:tab', { detail: tab }));
   }
   window.showHQTab = show;
   document.getElementById('hqTabs').addEventListener('click', e => {
@@ -2963,7 +2964,9 @@ function updateTabBadges() {
   let action = 0;
   try { allLeagues.forEach(l => { if (selectedLeagueIds.has(l.league_id) && leagueNeedsFix(l.league_id)) action++; }); } catch (_) {}
   set('badge-lineups', action, 'red');
-  set('badge-waivers', document.querySelectorAll('#waiverWatchList .ww-row').length, 'cyan');
+  let fas = new Set();
+  try { allLeagues.forEach(l => { if (selectedLeagueIds.has(l.league_id)) waiverEdgesForLeague(l.league_id).forEach(e => fas.add(e.fa.id)); }); } catch (_) {}
+  set('badge-waivers', fas.size, 'cyan');
   set('badge-trades', document.querySelectorAll('#tradeList .trade-item').length, 'violet');
   document.body.classList.toggle('hq-loaded', !!(typeof currentUser !== 'undefined' && currentUser));
 }
@@ -3240,16 +3243,19 @@ function assignSlots(starters, slots) {
   return place(0) ? used.map((u, i) => u ? i : -1).filter(i => i >= 0) : null;
 }
 
-function canLegallySwap(players, benchPlayer, starterPlayer, slots = DEFAULT_SLOTS) {
+// The slots your current starters fill. A swap must keep the same slots filled
+// (e.g. don't bench your only TE for a WR just because a FLEX spot happens to be open).
+function occupiedSlotsFor(players, slots) {
+  const occupied = assignSlots(players.filter(p => p.starting), slots);
+  return occupied ? occupied.map(i => slots[i]) : slots;
+}
+function canLegallySwap(players, benchPlayer, starterPlayer, slots = DEFAULT_SLOTS, occupied) {
   const simulated = players.map(p => {
     if (p.id === starterPlayer.id) return { ...p, starting: false };
     if (p.id === benchPlayer.id) return { ...p, starting: true };
-    return { ...p };
+    return p;
   });
-  // The swap must keep the same slots filled (e.g. don't bench your only TE
-  // for a WR just because a FLEX spot happens to be open).
-  const occupied = assignSlots(players.filter(p => p.starting), slots);
-  return isValidStartingLineup(simulated, occupied ? occupied.map(i => slots[i]) : slots);
+  return isValidStartingLineup(simulated, occupied || occupiedSlotsFor(players, slots));
 }
 
 // Start/sit rules:
@@ -3261,12 +3267,13 @@ function canLegallySwap(players, benchPlayer, starterPlayer, slots = DEFAULT_SLO
 function computeFantasyLineEdges(players, slots = DEFAULT_SLOTS) {
   const healthyBench = players.filter(p => !p.starting && !isLockedTeam(p.team) && !isForcedOut(p.name));
   const edges = [];
+  const occupied = occupiedSlotsFor(players, slots);
 
   // Rule 1: OUT / BYE starters, one best replacement each.
   const usedBench = new Set();
   players.filter(p => p.starting && !isLockedTeam(p.team) && isForcedOut(p.name)).forEach(s => {
     const best = healthyBench
-      .filter(b => !usedBench.has(b.id) && canLegallySwap(players, b, s, slots))
+      .filter(b => !usedBench.has(b.id) && canLegallySwap(players, b, s, slots, occupied))
       .sort((a, b) =>
         (b.fantasyLine ?? -Infinity) - (a.fantasyLine ?? -Infinity) ||
         Number(b.pos === s.pos) - Number(a.pos === s.pos) ||
@@ -3287,8 +3294,9 @@ function computeFantasyLineEdges(players, slots = DEFAULT_SLOTS) {
   linedBench.forEach(b => linedStarters.forEach(s => {
     // Only flag a bench edge when that exact player can legally replace
     // that exact starter under this league's lineup slots.
-    if (!canLegallySwap(players, b, s, slots)) return;
-    if (b.fantasyLine > s.fantasyLine) {
+    if (!(b.fantasyLine > s.fantasyLine)) return;
+    if (!canLegallySwap(players, b, s, slots, occupied)) return;
+    {
       edges.push({
         bench: b,
         starter: s,
@@ -3774,7 +3782,7 @@ function saveOffLeagues() {
   try { localStorage.setItem(OFF_LEAGUES_KEY, JSON.stringify(off)); } catch (e) {}
 }
 function afterLeagueSelectionChange() {
-  renderBoard();
+  renderBoard({ keepCache: true });
   try { updateAppbar(); } catch (e) {}
   try { renderMyTrades(); } catch (e) {}
   try { renderRecentTrades(); } catch (e) {}
@@ -3897,12 +3905,31 @@ async function loadLeagueState(league) {
 }
 
 
-function leagueActionReasons(lid) {
+// Alerts are expensive (every lined free agent × every starter), so each league's are worked
+// out once per update instead of every time a card, badge, filter or summary asks.
+let hqEpoch = 0;
+const hqCache = { edges: new Map(), reasons: new Map(), waiver: new Map() };
+function touchLeague(lid) { const st = leagueState[lid]; if (st) st._v = (st._v || 0) + 1; }
+function cached(kind, lid, compute) {
+  const st = leagueState[lid];
+  const k = hqEpoch + ':' + ((st && st._v) || 0) + ':' + (st ? 1 : 0);
+  const hit = hqCache[kind].get(lid);
+  if (hit && hit.k === k && hit.st === st) return hit.v;
+  const v = compute();
+  hqCache[kind].set(lid, { k, st, v });
+  return v;
+}
+function leagueEdges(lid) {
+  const st = leagueState[lid];
+  return cached('edges', lid, () => (st && Array.isArray(st.players)) ? computeFantasyLineEdges(st.players, leagueSlots(st)) : []);
+}
+function leagueActionReasons(lid) { return cached('reasons', lid, () => computeLeagueActionReasons(lid)); }
+function computeLeagueActionReasons(lid) {
   const state = leagueState[lid];
   if (!state || !Array.isArray(state.players) || state.noRoster || state.error) return [];
   const reasons = [];
   const players = state.players;
-  const edges = computeFantasyLineEdges(players, leagueSlots(state));
+  const edges = leagueEdges(lid);
   const out = players.filter(p => p.starting && isForcedOut(p.name));
   const pairOut = {}, usedIn = {};
   edges.forEach(e => { if (pairOut[e.starter.id] || usedIn[e.bench.id]) return; pairOut[e.starter.id] = e; usedIn[e.bench.id] = true; });
@@ -3932,7 +3959,7 @@ try { const f = localStorage.getItem(BOARD_FILTER_KEY); if (['all','action','goo
 function setBoardFilter(f) {
   boardFilter = f;
   try { localStorage.setItem(BOARD_FILTER_KEY, f); } catch (_) {}
-  renderBoard();
+  renderLineupsBoard();
 }
 function renderBoardFilter(selected) {
   const el = document.getElementById('boardFilter');
@@ -4034,7 +4061,6 @@ function updateLeagueSummary() {
   fixEl.textContent = fixes ? `⚠ ${fixes} ${fixes === 1 ? 'league needs' : 'leagues need'} action →` : '✓ All leagues look good';
   fixEl.classList.toggle('all-good', !fixes);
   summaryBar.style.display = allLeagues.length ? 'block' : 'none';
-  try { renderByeCard(); } catch (e) { console.warn('bye card', e); }
 }
 
 function updateLeagueCheckboxWarnings() {
@@ -4141,16 +4167,62 @@ function renderMostImportantPlayers() {
   `).join('');
 }
 
-function renderBoard() {
+// Full update after data changes (load, schedule, live scores, injuries, lines).
+// Only the tab on screen is drawn; the others draw when you switch to them.
+function renderBoard(opts) {
+  if (!(opts && opts.keepCache)) hqEpoch++;
   refreshByeNames();
-  renderRecordChart();
-  renderInjuryDesignations();
-  renderPlayoffPicture();
-  renderLiveBoard();
-  renderWaivers();
-  renderTradeFinder();
-  updateLeagueSelectorRecords();
-  renderMostImportantPlayers();
+  renderActiveTab();
+  updateLeagueCheckboxWarnings();
+  updateLeagueSummary();
+  updateTabBadges();
+  updateAppbar();
+}
+function activeTab() {
+  const el = document.querySelector('.hq-panel.on');
+  return el ? el.id.replace('panel-', '') : 'lineups';
+}
+function renderActiveTab() {
+  const tab = activeTab();
+  if (tab === 'lineups') {
+    renderRecordChart();
+    renderPlayoffPicture();
+    updateLeagueSelectorRecords();
+    try { renderByeCard(); } catch (e) { console.warn('bye card', e); }
+    renderLineupsBoard();
+  } else if (tab === 'gameday') {
+    renderLiveBoard();
+    renderMostImportantPlayers();
+    renderOpponentOnlyExposure();
+    renderSafeStartersSidebar();
+    renderOverlapSidebar();
+  } else if (tab === 'trades') {
+    renderTradeFinder();
+  } else if (tab === 'waivers') {
+    renderWaivers();
+  } else if (tab === 'settings') {
+    renderInjuryDesignations();
+  }
+}
+// Draw the tab right after it appears, so the switch itself feels instant.
+document.addEventListener('hq:tab', () => {
+  if (!currentUser) return;
+  requestAnimationFrame(() => setTimeout(() => { renderActiveTab(); updateTabBadges(); }, 0));
+});
+// Redraw a single league card after you change something in it.
+function refreshLeague(lid) {
+  touchLeague(lid);
+  const lg = allLeagues.find(l => l.league_id === lid);
+  const el = board.querySelector(`.league-block[data-league="${lid}"]`);
+  if (lg && el) renderLeagueBlock(lg, el);
+  renderBoardFilter(allLeagues.filter(l => selectedLeagueIds.has(l.league_id)));
+  updateLeagueCheckboxWarnings();
+  updateLeagueSummary();
+  updateTabBadges();
+  updateAppbar();
+  if (typeof renderPlayerSheet === 'function') renderPlayerSheet();
+}
+function renderLineupsBoard() {
   const selected = allLeagues.filter(l => selectedLeagueIds.has(l.league_id));
   renderBoardFilter(selected);
   const visible = selected.filter(l => {
@@ -4168,13 +4240,6 @@ function renderBoard() {
     emptyState.style.display = 'none';
     visible.forEach(lg => renderLeagueBlock(lg));
   }
-  renderOpponentOnlyExposure();
-  renderSafeStartersSidebar();
-  renderOverlapSidebar();
-  updateLeagueCheckboxWarnings();
-  updateLeagueSummary();
-  updateTabBadges();
-  updateAppbar();
 }
 document.getElementById('boardFilter').addEventListener('click', e => {
   if (e.target.closest('#bfExpand')) {
@@ -4182,7 +4247,7 @@ document.getElementById('boardFilter').addEventListener('click', e => {
     const open = !vis.every(l => leagueState[l.league_id].expanded);
     vis.forEach(l => { leagueState[l.league_id].expanded = open; });
     e.target.closest('#bfExpand').textContent = open ? 'Collapse all' : 'Expand all';
-    renderBoard();
+    renderLineupsBoard();
     return;
   }
   const b = e.target.closest('[data-filter]');
@@ -5841,18 +5906,25 @@ function getLinedPool() {
   });
   return linedFreeAgentPool;
 }
-function waiverEdgesForLeague(lid) {
+function waiverEdgesForLeague(lid) { return cached('waiver', lid, () => computeWaiverEdges(lid)); }
+function computeWaiverEdges(lid) {
   const state = leagueState[lid];
   if (!state || !state.rosteredIds || !Array.isArray(state.players)) return [];
   const edges = [];
+  const slots = leagueSlots(state);
+  const occupied = occupiedSlotsFor(state.players, slots);
+  const starters = state.players.filter(s => s.starting && !isLockedTeam(s.team) && (s.fantasyLine != null || isForcedOut(s.name)))
+    .map(s => ({ s, line: isForcedOut(s.name) ? 0 : s.fantasyLine }));
+  // Whether a free agent can replace a starter only depends on his position, so check each pair once.
+  const legal = {};
   getLinedPool().forEach(fa => {
     if (state.rosteredIds.has(fa.id) || isLockedTeam(fa.team) || isOnBye(fa.team)) return;
-    const withFa = [...state.players, fa];
-    state.players.filter(s => s.starting && !isLockedTeam(s.team) && (s.fantasyLine != null || isForcedOut(s.name))).forEach(s => {
-      if (!canLegallySwap(withFa, fa, s, leagueSlots(state))) return;
-      const sLine = isForcedOut(s.name) ? 0 : s.fantasyLine;
-      const faLine = leagueAdjustedLine(fa.name, fa.pos, state.league) ?? fa.fantasyLine;
-      if (faLine > sLine) edges.push({ fa: { ...fa, fantasyLine: faLine }, starter: s, diff: +(faLine - sLine).toFixed(1) });
+    const faLine = leagueAdjustedLine(fa.name, fa.pos, state.league) ?? fa.fantasyLine;
+    starters.forEach(({ s, line }) => {
+      if (!(faLine > line)) return;
+      const k = fa.pos + '|' + s.id;
+      if (!(k in legal)) legal[k] = canLegallySwap([...state.players, fa], fa, s, slots, occupied);
+      if (legal[k]) edges.push({ fa: { ...fa, fantasyLine: faLine }, starter: s, diff: +(faLine - line).toFixed(1) });
     });
   });
   // keep the best starter to replace for each FA
@@ -6390,9 +6462,10 @@ function renderOverlapSidebar() {
   `).join('');
 }
 
-function renderLeagueBlock(league) {
+function renderLeagueBlock(league, replaceEl) {
   const state = leagueState[league.league_id];
   if (!state) return;
+  const place = el => { if (replaceEl) replaceEl.replaceWith(el); else board.appendChild(el); };
 
   const block = document.createElement('div');
   block.className = 'league-block' + (state.doneFlag ? ' done' : '') + (state.expanded ? ' expanded' : ' collapsed');
@@ -6403,7 +6476,7 @@ function renderLeagueBlock(league) {
       <div class="league-block-header"><h3>${escapeHtml(league.name)}</h3></div>
       <div class="no-changes">${state.noRoster ? "Couldn't find your roster in this league yet." : "Couldn't load this league — try reloading."}</div>
     `;
-    board.appendChild(block);
+    place(block);
     return;
   }
 
@@ -6458,7 +6531,7 @@ function renderLeagueBlock(league) {
       <div id="matchup-body-${league.league_id}"></div>
     </div>` : ''}
   `;
-  board.appendChild(block);
+  place(block);
   renderRoster(league.league_id);
   renderChanges(league.league_id);
   if (state.opponent) renderMatchup(league.league_id);
@@ -6500,7 +6573,7 @@ board.addEventListener('click', (e) => {
     const st = leagueState[sw.dataset.swapLeague];
     const pin = st && st.players.find(p => p.id === sw.dataset.swapIn);
     const pout = st && st.players.find(p => p.id === sw.dataset.swapOut);
-    if (pin && pout && !isLockedTeam(pin.team) && !isLockedTeam(pout.team)) { pout.starting = false; pin.starting = true; renderBoard(); }
+    if (pin && pout && !isLockedTeam(pin.team) && !isLockedTeam(pout.team)) { pout.starting = false; pin.starting = true; refreshLeague(sw.dataset.swapLeague); }
     return;
   }
   const head = e.target.closest('[data-expand]');
@@ -6516,14 +6589,14 @@ board.addEventListener('click', (e) => {
   if (doneBtn) {
     const id = doneBtn.dataset.league;
     leagueState[id].doneFlag = !leagueState[id].doneFlag;
-    renderBoard();
+    refreshLeague(id);
     return;
   }
   const sortBtn = e.target.closest('.sort-toggle');
   if (sortBtn) {
     const id = sortBtn.dataset.league;
     leagueState[id].sortByEnv = !leagueState[id].sortByEnv;
-    renderBoard();
+    refreshLeague(id);
     return;
   }
   const matchupBtn = e.target.closest('.matchup-toggle');
@@ -6551,7 +6624,7 @@ board.addEventListener('click', (e) => {
     }
 
     player.starting = !player.starting;
-    renderBoard();
+    refreshLeague(lid);
   }
 });
 
@@ -6579,7 +6652,7 @@ function renderRoster(lid) {
 
   const startingCount = state.players.filter(p => p.starting).length;
   const capReached = startingCount >= leagueSlots(state).length;
-  const fantasyEdges = computeFantasyLineEdges(state.players, leagueSlots(state));
+  const fantasyEdges = leagueEdges(lid);
   const benchEdgeIds = new Set(fantasyEdges.map(e => e.bench.id));
   const starterLowIds = new Set(fantasyEdges.map(e => e.starter.id));
   // Pair each suggested swap one-for-one: starter to sit ↔ bench player to start.
