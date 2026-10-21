@@ -2451,6 +2451,125 @@ body.ps-open > :not(#psSheet):not(script){display:none!important}
 .ps-empty{font:500 13.5px 'Inter',sans-serif;color:var(--text-dim);padding:18px 4px;text-align:center}
 .ps-open-btn{display:flex;align-items:center;gap:8px;width:100%;margin:0 0 10px;background:var(--input);color:var(--text-dim);border:1px solid var(--line-strong);border-radius:12px;padding:12px 14px;font:500 15px 'Inter',sans-serif;cursor:pointer;text-align:left}
 @media (max-width:420px){.ps-stat .n{font-size:18px}.ps-stat .l{font-size:10px}}
+
+/* ================= SLEEPER-STYLE LEAGUES ================= */
+/* League rows */
+.lg-row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:12px 12px 12px 14px;cursor:pointer;font:inherit;min-height:66px;-webkit-tap-highlight-color:transparent}
+.lg-row:active{background:var(--surface2)}
+.lg-row.needs{border-color:color-mix(in srgb,var(--bad) 45%,var(--line))}
+.lg-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.lg-name{font:700 15.5px 'Inter',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg-sub{font:500 12.5px 'Inter',sans-serif;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg-issue{font:600 12.5px 'Inter',sans-serif;color:var(--bad);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg-side{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.lg-rec{font:700 14px 'Inter',sans-serif;font-variant-numeric:tabular-nums}
+.lg-pill{font:700 11px 'Inter',sans-serif;border-radius:999px;padding:3px 8px;white-space:nowrap}
+.lg-pill.fix{color:#fff;background:var(--bad)}
+.lg-pill.ok{color:var(--good);background:var(--good-soft)}
+.lg-pill.done{color:var(--text-dim);background:var(--surface2)}
+.lg-chev{color:var(--text-dim);font-size:24px;line-height:1;flex-shrink:0}
+.lg-row .lb-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--line-strong)}
+.lg-row .lb-dot.bad{background:var(--bad)}
+.lg-row .lb-dot.good{background:var(--good)}
+.no-changes,.ask-none{font-family:'Inter',sans-serif!important;font-size:13.5px!important;line-height:1.5}
+.board{display:flex!important;flex-direction:column!important;gap:8px!important}
+
+/* Tidier top of the Leagues screen */
+.summary-card{padding:12px 14px!important;gap:10px!important}
+.summary-record{font-size:14px!important}
+.summary-record span{font-size:22px!important}
+.rec-box{flex-basis:100%;border-top:1px solid var(--line);padding-top:8px}
+.rec-box>summary,.bye-card>summary{cursor:pointer;list-style:none;font:600 13.5px 'Inter',sans-serif;color:var(--text-dim)}
+.rec-box>summary::-webkit-details-marker{display:none}
+.rec-box .rec-head{border-top:none;padding-top:0}
+.bye-card{padding:12px 14px!important}
+.board-filter{gap:4px!important}
+
+/* League page (full screen) */
+.lg-sheet{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+.lg-sheet[hidden]{display:none}
+body.lg-open{overflow:hidden}
+body.lg-open > :not(#lgSheet):not(#psSheet):not(script){display:none!important}
+.lg-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 12px;border-bottom:1px solid var(--line);max-width:760px;width:100%;margin:0 auto}
+.lg-back{background:none;border:none;color:var(--accent);font:600 17px 'Inter',sans-serif;padding:10px 4px;min-height:44px;cursor:pointer}
+.lg-open{color:var(--text)!important;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font:600 13.5px 'Inter',sans-serif;text-decoration:none;white-space:nowrap}
+.lg-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:14px 16px calc(28px + env(safe-area-inset-bottom));max-width:760px;width:100%;margin:0 auto}
+.lgd-title{font:800 24px/1.15 'Inter',sans-serif;letter-spacing:-.02em;color:var(--text)}
+.lgd-meta{font:500 14px 'Inter',sans-serif;color:var(--text-dim);margin-top:4px}
+.lgd-score{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.lgd-score div{display:flex;flex-direction:column;min-width:0}
+.lgd-score div:last-child{text-align:right}
+.lgd-score span{font:600 11.5px 'Inter',sans-serif;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lgd-score b{font:800 24px 'Inter',sans-serif;font-variant-numeric:tabular-nums;color:var(--text)}
+.lgd-score i{font-style:normal;color:var(--text-dim)}
+.lgd-fix{border:1px solid color-mix(in srgb,var(--bad) 45%,transparent);background:var(--bad-soft);border-radius:14px;padding:10px 12px;margin:14px 0 4px}
+.lgd-fix-title{font:800 12px 'Inter',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--bad);margin-bottom:2px}
+.fix-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid color-mix(in srgb,var(--bad) 22%,transparent)}
+.lgd-fix-title + .fix-row{border-top:none}
+.fix-text{flex:1;min-width:0;font:700 15px/1.3 'Inter',sans-serif;color:var(--text)}
+.fix-text small{display:block;font:500 13px/1.35 'Inter',sans-serif;color:var(--text-dim);margin-top:2px}
+.fix-btn{flex-shrink:0;background:var(--good);color:#06240f;border:none;border-radius:10px;padding:10px 14px;font:700 14px 'Inter',sans-serif;min-height:44px;cursor:pointer;white-space:nowrap}
+.fix-btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line-strong)}
+.lgd-ok{margin:14px 0 4px;padding:10px 12px;border-radius:12px;background:var(--good-soft);color:var(--good);font:700 14px 'Inter',sans-serif}
+.lgd-cap{margin:10px 0 0;padding:9px 12px;border-radius:10px;background:var(--warn-soft);color:var(--warn);font:600 13.5px 'Inter',sans-serif}
+.lgd-sec{display:flex;justify-content:space-between;align-items:center;font:800 12px 'Inter',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin:20px 2px 4px}
+.lgd-link{background:none;border:none;color:var(--accent);font:600 13px 'Inter',sans-serif;text-transform:none;letter-spacing:0;cursor:pointer;padding:6px 0}
+/* Player rows: name on top, details underneath, one big button */
+.pr{display:flex;align-items:center;gap:12px;padding:10px 2px;border-bottom:1px solid var(--line);min-height:62px}
+.pr.sit{background:linear-gradient(90deg,var(--bad-soft),transparent 70%)}
+.pr.up{background:linear-gradient(90deg,var(--good-soft),transparent 70%)}
+.pr.locked{opacity:.6}
+.pr .pos-tag{width:36px!important;flex-shrink:0}
+.pr-main{flex:1;min-width:0}
+.pr-name{font:600 16px 'Inter',sans-serif;color:var(--text);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pr.out .pr-name{color:var(--bad)}
+.pr-meta{font:500 12.5px 'Inter',sans-serif;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-meta b{color:var(--warn)}
+.pr-hint{display:inline-block;margin-top:5px;font:700 12px 'Inter',sans-serif;border-radius:6px;padding:2px 7px}
+.pr-hint.bad{color:var(--bad);background:var(--bad-soft)}
+.pr-hint.good{color:var(--good);background:var(--good-soft)}
+.pr-badge{font:800 10.5px 'Inter',sans-serif;border-radius:5px;padding:2px 6px}
+.pr-badge.bad{color:var(--bad);background:var(--bad-soft)}
+.pr-badge.warn{color:var(--warn);background:var(--warn-soft)}
+.pr-chg{font:600 10.5px 'Inter',sans-serif;color:var(--accent);border:1px solid var(--accent);border-radius:5px;padding:1px 5px}
+.toggle-btn.pr-btn{flex-shrink:0;min-width:78px!important;min-height:42px!important;margin:0!important;border-radius:10px!important;font:700 14px 'Inter',sans-serif!important;text-transform:none!important;letter-spacing:0!important;background:var(--surface2)!important;color:var(--text-dim)!important;border:1px solid var(--line-strong)!important}
+.toggle-btn.pr-btn.on{background:var(--good-soft)!important;color:var(--good)!important;border-color:color-mix(in srgb,var(--good) 55%,transparent)!important}
+.toggle-btn.pr-btn.locked{opacity:.45}
+.pr.opp{min-height:52px}
+.lgd-opp{margin-top:18px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}
+.lgd-opp>summary{cursor:pointer;font:700 14px 'Inter',sans-serif;color:var(--text);list-style:none}
+.lgd-opp>summary::-webkit-details-marker{display:none}
+.lgd-tools{display:flex;gap:8px;margin-top:18px}
+.lgd-btn{flex:1;display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:12px;font:700 14.5px 'Inter',sans-serif!important;text-decoration:none;cursor:pointer;border:1px solid var(--line-strong)!important;background:var(--surface)!important;color:var(--text)!important;text-transform:none!important;letter-spacing:0!important}
+.lgd-btn.primary{background:var(--accent)!important;color:var(--accent-ink)!important;border-color:transparent!important}
+.lgd-btn.active{color:var(--good)!important;border-color:var(--good)!important}
+.lgd-note{font:500 12px/1.45 'Inter',sans-serif;color:var(--text-dim);margin-top:10px}
+
+/* Leagues screen: compact summary row, extras under the list */
+.summary-card{flex-wrap:nowrap!important;justify-content:space-between!important;align-items:center!important}
+.summary-record{display:flex!important;align-items:baseline!important;gap:8px!important;white-space:nowrap}
+button.summary-fix-count{font-size:13px!important;padding:8px 12px!important;white-space:nowrap}
+.board-filter button{display:flex!important;align-items:center;justify-content:center;gap:4px;white-space:nowrap;padding:9px 6px!important;font-size:13px!important}
+.board-filter .bf-count{margin-left:2px!important}
+.ps-open-btn{min-height:46px}
+.lg-extras{max-width:1148px;margin:18px auto 0;padding:0 24px;display:flex;flex-direction:column;gap:8px}
+.lg-extras .rec-box,.lg-extras .bye-card{background:var(--surface);border:1px solid var(--line)!important;border-radius:14px;padding:12px 14px!important;border-top-width:1px!important}
+.lg-extras .rec-box>summary,.lg-extras .bye-card>summary .bye-title{font:600 14px 'Inter',sans-serif;color:var(--text)}
+.lg-extras .bye-wrap{max-width:none;margin:0;padding:0}
+.lg-extras #leagueStepLabel{margin:0!important;align-self:flex-start}
+.lg-extras .league-check-wrap{padding:0!important;margin:0!important;max-width:none!important}
+@media (max-width:760px){.lg-extras{padding:0 14px}}
+
+/* More = Waivers + Settings */
+.more-switch{display:flex;gap:6px;max-width:1272px;margin:14px auto 4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.more-switch button{flex:1;min-height:42px;border:none;border-radius:9px;background:transparent;color:var(--text-dim);font:600 14px 'Inter',sans-serif;cursor:pointer}
+.more-switch button.on{background:var(--surface2);color:var(--text);box-shadow:inset 0 0 0 1px var(--line-strong)}
+@media (max-width:1320px){.more-switch{margin-left:24px;margin-right:24px}}
+@media (max-width:760px){
+  .more-switch{margin-left:14px;margin-right:14px}
+  .ab-search{display:none}           /* Search lives in the bottom bar on phones */
+  .ab-nav .hq-tabs button .t-lbl{font-size:10.5px}
+}
 </style>
 
 
@@ -2479,14 +2598,14 @@ body.ps-open > :not(#psSheet):not(script){display:none!important}
   <div class="status-msg" id="statusMsg"></div>
   <div class="summary-bar" id="summaryBar">
     <div class="summary-card">
-      <div class="summary-record">Combined Record: <span id="combinedRecord">0-0</span></div>
+      <div class="summary-record">Record <span id="combinedRecord">0-0</span></div>
       <button type="button" class="summary-fix-count" id="fixCount" title="Show only leagues that need action">0 leagues need action</button>
-      <div class="rec-chart" id="recordChart"></div>
+      <details class="rec-box"><summary>📈 Week-by-week record</summary><div class="rec-chart" id="recordChart"></div></details>
     </div>
   </div>
 
   <div class="bye-wrap" id="byeWrap">
-    <details class="bye-card" id="byeCard" open>
+    <details class="bye-card" id="byeCard">
       <summary><span class="bye-title">📅 Bye weeks</span><span class="bye-sum" id="byeSummary"></span></summary>
       <div class="bye-sub">Your likely starters vs. your opponent's that week, across the leagues you have on. <b>Green</b> = byes hurt them more, <b>red</b> = they hurt you more. Tap a week for details.</div>
       <div class="bye-strip" id="byeStrip"></div>
@@ -2721,12 +2840,11 @@ body.ps-open > :not(#psSheet):not(script){display:none!important}
       <div id="safeStartersList"><div class="no-changes">Load your leagues to calculate.</div></div>
     </aside>
     <div class="main-col">
-      <button type="button" class="ps-open-btn" data-open-search>🔎 Search a player — who you start, bench and face</button>
+      <button type="button" class="ps-open-btn" data-open-search>🔎 Search a player</button>
       <div class="board-filter" id="boardFilter" style="display:none;" role="tablist" aria-label="Filter leagues">
         <button type="button" data-filter="all">All <span class="bf-count">0</span></button>
-        <button type="button" data-filter="action" class="bf-action">⚠ Needs action <span class="bf-count">0</span></button>
-        <button type="button" data-filter="good" class="bf-good">✓ Looks good <span class="bf-count">0</span></button>
-        <button type="button" class="bf-expand" id="bfExpand" title="Expand or collapse all leagues">Expand all</button>
+        <button type="button" data-filter="action" class="bf-action">⚠ To fix <span class="bf-count">0</span></button>
+        <button type="button" data-filter="good" class="bf-good">✓ Set <span class="bf-count">0</span></button>
       </div>
       <div class="board" id="board"></div>
       <div class="empty-state" id="emptyState" style="display:none;">No leagues selected.</div>
@@ -2764,12 +2882,19 @@ body.ps-open > :not(#psSheet):not(script){display:none!important}
   </div>
 </header>
 <nav class="hq-tabs" id="hqTabs" role="tablist" aria-label="Sections">
-  <button role="tab" data-tab="lineups"><span class="t-ico">📋</span><span class="t-lbl">Lineups</span><span class="t-badge" id="badge-lineups"></span></button>
+  <button role="tab" data-tab="lineups"><span class="t-ico">🏆</span><span class="t-lbl">Leagues</span><span class="t-badge" id="badge-lineups"></span></button>
+  <button role="tab" data-action="search" aria-label="Search a player"><span class="t-ico">🔎</span><span class="t-lbl">Search</span></button>
   <button role="tab" data-tab="gameday"><span class="t-ico">🏈</span><span class="t-lbl">Game Day</span><span class="t-badge" id="badge-gameday"></span></button>
   <button role="tab" data-tab="trades"><span class="t-ico">🤝</span><span class="t-lbl">Trades</span><span class="t-badge" id="badge-trades"></span></button>
-  <button role="tab" data-tab="waivers"><span class="t-ico">🧲</span><span class="t-lbl">Waivers</span><span class="t-badge" id="badge-waivers"></span></button>
-  <button role="tab" data-tab="settings"><span class="t-ico">⚙️</span><span class="t-lbl">Settings</span><span class="t-badge" id="badge-settings"></span></button>
+  <button role="tab" data-tab="more"><span class="t-ico">⋯</span><span class="t-lbl">More</span><span class="t-badge" id="badge-waivers"></span></button>
 </nav>
+<div class="lg-sheet" id="lgSheet" role="dialog" aria-modal="true" aria-label="League" hidden>
+  <div class="lg-head">
+    <button type="button" class="lg-back" id="lgBack">‹ Leagues</button>
+    <a class="lg-open" id="lgOpen" href="#" target="_blank" rel="noopener">Open in Sleeper ↗</a>
+  </div>
+  <div class="lg-body" id="lgBody"></div>
+</div>
 <div class="ps-sheet" id="psSheet" role="dialog" aria-modal="true" aria-label="Search a player" hidden>
   <div class="ps-head">
     <input id="psInput" type="search" placeholder="Search any player…" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="search">
@@ -2808,8 +2933,9 @@ body.ps-open > :not(#psSheet):not(script){display:none!important}
     <div class="root-scope" id="rootScope"></div>
     <div class="gd-grid" id="gdGrid"></div></section>
   <section class="hq-panel" id="panel-trades" role="tabpanel"><div class="tab-empty">Load your leagues to find trades. Paste Flock rankings in Settings first.</div></section>
-  <section class="hq-panel" id="panel-waivers" role="tabpanel"><div class="tab-empty">Load your leagues to check the waiver wire and track claims.</div></section>
+  <section class="hq-panel" id="panel-waivers" role="tabpanel"><div class="more-switch"><button type="button" data-tab="waivers">🧲 Waivers</button><button type="button" data-tab="settings">⚙️ Settings &amp; injuries</button></div><div class="tab-empty">Load your leagues to check the waiver wire and track claims.</div></section>
   <section class="hq-panel" id="panel-settings" role="tabpanel">
+    <div class="more-switch"><button type="button" data-tab="waivers">🧲 Waivers</button><button type="button" data-tab="settings">⚙️ Settings &amp; injuries</button></div>
     <div class="settings-card" id="settingsTheme">
       <div class="settings-title">🎨 Theme</div>
       <div class="settings-sub">Pick a look. It switches instantly and is remembered on this device.</div>
@@ -2859,13 +2985,23 @@ body.ps-open > :not(#psSheet):not(script){display:none!important}
   ['injuryPanel', 'linesNote', 'disclaimerNote'].forEach(id => move(id, 'panel-settings'));
   // Install instructions go last in Settings
   move('settingsInstall', 'panel-settings');
+  // Leagues screen: your leagues first; season record, bye weeks and the league picker go underneath.
+  const extras = document.createElement('div');
+  extras.className = 'lg-extras';
+  [document.querySelector('.rec-box'), document.getElementById('byeWrap'), document.getElementById('leagueStepLabel'), document.getElementById('leagueCheckWrap')]
+    .forEach(el => { if (el) extras.appendChild(el); });
+  document.getElementById('panel-lineups').appendChild(extras);
 
   const TAB_KEY = 'fantasy-hq-tab-v1';
   const tabs = ['lineups', 'gameday', 'trades', 'waivers', 'settings'];
+  let lastMore = 'waivers';
+  try { if (localStorage.getItem(TAB_KEY) === 'settings') lastMore = 'settings'; } catch (_) {}
   function show(tab, push) {
+    if (tab === 'more') tab = lastMore;
     if (!tabs.includes(tab)) tab = 'lineups';
-    document.querySelectorAll('#hqTabs [data-tab]').forEach(b => {
-      const on = b.dataset.tab === tab;
+    if (tab === 'waivers' || tab === 'settings') lastMore = tab;
+    document.querySelectorAll('[data-tab]').forEach(b => {
+      const on = b.dataset.tab === tab || (b.dataset.tab === 'more' && (tab === 'waivers' || tab === 'settings'));
       b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
     });
     tabs.forEach(t => document.getElementById('panel-' + t).classList.toggle('on', t === tab));
@@ -2874,8 +3010,9 @@ body.ps-open > :not(#psSheet):not(script){display:none!important}
     document.dispatchEvent(new CustomEvent('hq:tab', { detail: tab }));
   }
   window.showHQTab = show;
-  document.getElementById('hqTabs').addEventListener('click', e => {
-    const b = e.target.closest('[data-tab]');
+  document.addEventListener('click', e => {
+    if (e.target.closest('#hqTabs [data-action="search"]')) { if (window.openPlayerSheet) openPlayerSheet(); return; }
+    const b = e.target.closest('#hqTabs [data-tab], .more-switch [data-tab]');
     if (!b) return;
     show(b.dataset.tab, true);
     // New tab starts at the top (on phones the tab bar sits at the bottom of the screen).
@@ -4174,6 +4311,7 @@ function renderBoard(opts) {
   if (!(opts && opts.keepCache)) hqEpoch++;
   refreshByeNames();
   renderActiveTab();
+  renderLeagueDetail();
   updateLeagueCheckboxWarnings();
   updateLeagueSummary();
   updateTabBadges();
@@ -4214,13 +4352,14 @@ document.addEventListener('hq:tab', () => {
 function refreshLeague(lid) {
   touchLeague(lid);
   const lg = allLeagues.find(l => l.league_id === lid);
-  const el = board.querySelector(`.league-block[data-league="${lid}"]`);
+  const el = board.querySelector(`[data-league-row="${lid}"]`);
   if (lg && el) renderLeagueBlock(lg, el);
   renderBoardFilter(allLeagues.filter(l => selectedLeagueIds.has(l.league_id)));
   updateLeagueCheckboxWarnings();
   updateLeagueSummary();
   updateTabBadges();
   updateAppbar();
+  renderLeagueDetail();
   if (typeof renderPlayerSheet === 'function') { psInvalidate(); renderPlayerSheet(); }
 }
 function renderLineupsBoard() {
@@ -6463,127 +6602,173 @@ function renderOverlapSidebar() {
   `).join('');
 }
 
+// ================= LEAGUES LIST + LEAGUE PAGE =================
+// Home is one compact row per league (like Sleeper). Tapping a row opens that league
+// full screen: what to fix first (with one-tap swaps), then starters and bench.
+const POS_ORDER = { QB: 0, RB: 1, WR: 2, TE: 3, K: 4, DEF: 5 };
+const byPos = (a, b) => (POS_ORDER[a.pos] ?? 9) - (POS_ORDER[b.pos] ?? 9) || a.name.localeCompare(b.name);
+function recordText(st) { return st.ties > 0 ? `${st.wins}-${st.losses}-${st.ties}` : `${st.wins}-${st.losses}`; }
+
 function renderLeagueBlock(league, replaceEl) {
-  const state = leagueState[league.league_id];
+  const lid = league.league_id, state = leagueState[lid];
   if (!state) return;
-  const place = el => { if (replaceEl) replaceEl.replaceWith(el); else board.appendChild(el); };
-
-  const block = document.createElement('div');
-  block.className = 'league-block' + (state.doneFlag ? ' done' : '') + (state.expanded ? ' expanded' : ' collapsed');
-  block.dataset.league = league.league_id;
-
+  const row = document.createElement('button');
+  row.type = 'button';
+  row.className = 'lg-row';
+  row.dataset.leagueRow = lid;
+  row.dataset.openLeague = lid;
   if (state.noRoster || state.error) {
-    block.innerHTML = `
-      <div class="league-block-header"><h3>${escapeHtml(league.name)}</h3></div>
-      <div class="no-changes">${state.noRoster ? "Couldn't find your roster in this league yet." : "Couldn't load this league — try reloading."}</div>
-    `;
-    place(block);
+    row.innerHTML = `<span class="lb-dot"></span><span class="lg-main"><span class="lg-name">${escapeHtml(league.name)}</span>
+      <span class="lg-sub">${state.noRoster ? "Couldn't find your roster in this league yet." : "Couldn't load this league. Tap ⟳ to retry."}</span></span>`;
+  } else {
+    const reasons = leagueActionReasons(lid);
+    const needs = reasons.length > 0 && !state.doneFlag;
+    if (needs) row.classList.add('needs');
+    const opp = state.opponent;
+    const score = opp ? `vs ${escapeHtml(opp.teamName)} · ${(+state.myPoints || 0).toFixed(1)}–${(+opp.totalPoints || 0).toFixed(1)}` : 'No matchup this week';
+    const pill = needs ? `<span class="lg-pill fix">${reasons.length} to fix</span>`
+      : state.doneFlag && reasons.length ? '<span class="lg-pill done">Done</span>' : '<span class="lg-pill ok">✓ Set</span>';
+    row.innerHTML = `<span class="lb-dot ${needs ? 'bad' : 'good'}"></span>
+      <span class="lg-main"><span class="lg-name">${escapeHtml(league.name)}</span><span class="lg-sub">${score}</span>
+        ${needs ? `<span class="lg-issue">${escapeHtml(reasons[0].icon + ' ' + reasons[0].text)}${reasons.length > 1 ? ` · +${reasons.length - 1} more` : ''}</span>` : ''}</span>
+      <span class="lg-side"><span class="lg-rec">${recordText(state)}</span>${pill}</span><span class="lg-chev" aria-hidden="true">›</span>`;
+  }
+  if (replaceEl) replaceEl.replaceWith(row); else board.appendChild(row);
+}
+
+// ---------- league page ----------
+const lgSheet = document.getElementById('lgSheet');
+const lgBody = document.getElementById('lgBody');
+let lgOpenId = null, lgScrollY = 0;
+function openLeague(lid) {
+  if (!leagueState[lid]) return;
+  lgOpenId = lid;
+  if (lgSheet.hidden) {
+    lgScrollY = window.scrollY;
+    lgSheet.hidden = false;
+    document.body.classList.add('lg-open');
+    try { history.pushState({ lg: 1 }, ''); } catch (_) {}
+  }
+  renderLeagueDetail();
+  lgBody.scrollTop = 0;
+}
+function closeLeague(fromBack) {
+  if (lgSheet.hidden) return;
+  lgSheet.hidden = true;
+  lgOpenId = null;
+  document.body.classList.remove('lg-open');
+  window.scrollTo(0, lgScrollY);
+  if (!fromBack && history.state && history.state.lg) history.back();
+}
+document.getElementById('lgBack').addEventListener('click', () => closeLeague());
+window.addEventListener('popstate', () => { if (!lgSheet.hidden && !(history.state && history.state.ps)) closeLeague(true); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !lgSheet.hidden && document.getElementById('psSheet').hidden) closeLeague(); });
+
+function playerRowHtml(p, lid, swapOut, swapIn, capReached) {
+  const out = isForcedOut(p.name), locked = isLockedTeam(p.team);
+  const status = availabilityLabel(p.name);
+  const badge = status === 'Healthy' ? '' : `<span class="pr-badge ${out ? 'bad' : 'warn'}">${escapeHtml(status === 'Questionable' ? 'Q' : status.toUpperCase())}</span>`;
+  const sOut = p.starting ? swapOut[p.id] : null, sIn = !p.starting ? swapIn[p.id] : null;
+  const hint = sOut ? `<span class="pr-hint bad">↓ Sit · start ${escapeHtml(sOut.bench.name)}${sOut.forcedOut ? '' : ` (+${sOut.diff})`}</span>`
+    : sIn ? `<span class="pr-hint good">↑ Start over ${escapeHtml(sIn.starter.name)}</span>` : '';
+  const meta = [
+    escapeHtml(p.team),
+    p.fantasyLine != null ? `Line ${Number(p.fantasyLine).toFixed(1)}` : null,
+    p.env ? escapeHtml(p.env.label || '') : null,
+    locked ? `🔒 ${escapeHtml((teamGame(p.team) || {}).detail || 'Locked')}` : null,
+    p.points ? `<b>${Number(p.points).toFixed(1)} pts</b>` : null
+  ].filter(Boolean).join(' · ');
+  const changed = p.starting !== p.wasStarting ? '<span class="pr-chg">changed</span>' : '';
+  const disabled = locked || (!p.starting && capReached);
+  return `<div class="pr${sOut ? ' sit' : ''}${sIn ? ' up' : ''}${out ? ' out' : ''}${locked ? ' locked' : ''}">
+    <span class="pos-tag" data-pos="${escapeHtml(p.pos)}">${escapeHtml(p.pos)}</span>
+    <div class="pr-main"><div class="pr-name">${escapeHtml(p.name)} ${badge}${changed}</div><div class="pr-meta">${meta}</div>${hint}</div>
+    <button type="button" class="toggle-btn pr-btn${p.starting ? ' on' : ''}${disabled ? ' locked' : ''}" data-league="${lid}" data-player="${escapeHtml(p.id)}"
+      aria-label="${p.starting ? 'Starting' : 'On bench'}: ${escapeHtml(p.name)}. Tap to ${p.starting ? 'bench' : 'start'}">${p.starting ? 'Starting' : 'Bench'}</button>
+  </div>`;
+}
+
+function renderLeagueDetail() {
+  if (!lgOpenId || lgSheet.hidden) return;
+  const lid = lgOpenId, st = leagueState[lid], lg = allLeagues.find(l => l.league_id === lid);
+  if (!st || !lg) { closeLeague(); return; }
+  document.getElementById('lgOpen').href = `https://sleeper.com/leagues/${lid}`;
+  if (st.noRoster || st.error) {
+    lgBody.innerHTML = `<div class="lgd-title">${escapeHtml(lg.name)}</div><div class="ps-empty">${st.noRoster ? "Couldn't find your roster in this league yet." : "Couldn't load this league. Tap ⟳ to retry."}</div>`;
     return;
   }
+  const slots = leagueSlots(st);
+  const startingCount = st.players.filter(p => p.starting).length;
+  const capReached = startingCount >= slots.length;
+  const swapOut = {}, swapIn = {};
+  leagueEdges(lid).forEach(e => {
+    if (swapOut[e.starter.id] || swapIn[e.bench.id]) return;
+    swapOut[e.starter.id] = e; swapIn[e.bench.id] = e;
+  });
+  const reasons = leagueActionReasons(lid);
+  const opp = st.opponent;
 
-  const startingCount = state.players.filter(p => p.starting).length;
-  const maxStarters = leagueSlots(state).length;
-  const fillClass = startingCount === maxStarters ? 'ok' : (startingCount > maxStarters ? 'over' : '');
-  const reasons = leagueActionReasons(league.league_id);
-  const needsAction = reasons.length > 0 && !state.doneFlag;
-  if (needsAction) block.classList.add('needs-action');
-  const leagueStatusPill = needsAction
-    ? `<span class="league-status-pill fix">⚠ ${reasons.length} to fix</span>`
-    : (reasons.length ? `<span class="league-status-pill good">✓ Marked done</span>` : `<span class="league-status-pill good">✓ Looks good</span>`);
-  const actionBanner = needsAction ? `
-    <div class="action-banner">
-      <div class="ab-title">⚠ Action needed</div>
-      ${reasons.map(r => `<div class="ab-row ab-${r.kind}"><span class="ab-chip">${r.icon} ${r.label}</span><span class="ab-text">${escapeHtml(r.text)}</span></div>`).join('')}
-    </div>` : '';
+  // What to fix: every suggested swap gets its own one-tap button; waiver ideas link to Waivers.
+  const fixRows = Object.values(swapOut).map(e => `
+    <div class="fix-row">
+      <div class="fix-text">${e.forcedOut ? `${escapeHtml(e.starter.name)} is ${escapeHtml(availabilityLabel(e.starter.name) === 'BYE' ? 'on BYE' : availabilityLabel(e.starter.name))}` : `${escapeHtml(e.bench.name)} projects higher (+${e.diff})`}
+        <small>Start ${escapeHtml(e.bench.name)} instead</small></div>
+      <button type="button" class="fix-btn" data-swap-league="${lid}" data-swap-in="${escapeHtml(e.bench.id)}" data-swap-out="${escapeHtml(e.starter.id)}">Make swap</button>
+    </div>`).join('');
+  const outNoSub = st.players.filter(p => p.starting && isForcedOut(p.name) && !swapOut[p.id] && !isLockedTeam(p.team));
+  const noSubRows = outNoSub.map(p => `<div class="fix-row"><div class="fix-text">${escapeHtml(p.name)} is ${escapeHtml(availabilityLabel(p.name))}<small>No healthy bench player fits his spot. Check Waivers.</small></div>
+    <button type="button" class="fix-btn ghost" data-tab-go="waivers">Waivers</button></div>`).join('');
+  const waiver = reasons.find(r => r.kind === 'waiver');
+  const waiverRow = waiver ? `<div class="fix-row"><div class="fix-text">Free agent upgrade<small>${escapeHtml(waiver.text)}</small></div>
+    <button type="button" class="fix-btn ghost" data-tab-go="waivers">Waivers</button></div>` : '';
+  const anyFix = fixRows || noSubRows || waiverRow;
+  const fixBox = anyFix && !st.doneFlag ? `<div class="lgd-fix"><div class="lgd-fix-title">⚠ To fix</div>${fixRows}${noSubRows}${waiverRow}</div>`
+    : `<div class="lgd-ok">${st.doneFlag && anyFix ? '✓ Marked done' : '✓ Lineup looks good'}</div>`;
 
-  const startersN = state.players.filter(p => p.starting).length;
-  const rowSummary = needsAction
-    ? `<span class="lb-issue">${escapeHtml(reasons[0].icon + ' ' + reasons[0].text)}${reasons.length > 1 ? ` <em>+${reasons.length - 1} more</em>` : ''}</span>`
-    : `<span class="lb-ok">${startersN}/${leagueSlots(state).length} starters set${state.opponent ? ` · vs ${escapeHtml(state.opponent.teamName)}` : ''}</span>`;
-  block.innerHTML = `
-    <div class="league-block-header" data-expand="${league.league_id}">
-      <span class="lb-dot ${needsAction ? 'bad' : 'good'}"></span>
-      <h3>${escapeHtml(league.name)} ${leagueStatusPill}
-        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);font-weight:500;margin-left:6px;">
-          ${state.ties > 0 ? `${state.wins}-${state.losses}-${state.ties}` : `${state.wins}-${state.losses}`}
-        </span>
-        ${(() => { const po = SHOW_PLAYOFF_PICTURE && playoffInfo(league.league_id); return po ? `<span class="po-chip ${po.status}" title="${escapeHtml(po.detail)}">🏆 ${ordinal(po.rank)} · ${PO_LABEL[po.status]}</span>` : ''; })()}
-      </h3>
-      <div class="lb-summary">${rowSummary}</div>
-      <span class="lb-chev" aria-hidden="true">›</span>
-      <div class="header-actions">
-        ${state.hasEnv ? `<button class="sort-toggle ${state.sortByEnv ? 'on' : ''}" data-league="${league.league_id}">${state.sortByEnv ? '↓ Sorted by matchup' : 'Sort by matchup'}</button>` : ''}
-        <button class="done-toggle ${state.doneFlag ? 'active' : ''}" data-league="${league.league_id}">${state.doneFlag ? '✓ Done' : 'Mark done'}</button>
-        <a class="open-link" href="https://sleeper.com/leagues/${league.league_id}" target="_blank" rel="noopener">Open in Sleeper →</a>
-      </div>
+  const changed = st.players.some(p => p.starting !== p.wasStarting);
+  const starters = st.players.filter(p => p.starting).sort(byPos);
+  const bench = st.players.filter(p => !p.starting).sort(byPos);
+  const oppRows = opp ? (opp.players || []).slice().sort(byPos).map(p => `
+    <div class="pr opp"><span class="pos-tag" data-pos="${escapeHtml(p.pos)}">${escapeHtml(p.pos)}</span>
+      <div class="pr-main"><div class="pr-name">${escapeHtml(p.name)} ${isForcedOut(p.name) ? `<span class="pr-badge bad">${escapeHtml(availabilityLabel(p.name).toUpperCase())}</span>` : ''}</div>
+      <div class="pr-meta">${escapeHtml(p.team)}${p.points ? ` · <b>${p.points.toFixed(1)} pts</b>` : ''}</div></div></div>`).join('') : '';
+
+  lgBody.innerHTML = `
+    <div class="lgd-title">${escapeHtml(lg.name)}</div>
+    <div class="lgd-meta">${recordText(st)}${opp ? ` · vs ${escapeHtml(opp.teamName)}` : ''}</div>
+    ${opp ? `<div class="lgd-score"><div><span>You</span><b>${(+st.myPoints || 0).toFixed(1)}</b></div><i>–</i><div><span>${escapeHtml(opp.teamName)}</span><b>${(+opp.totalPoints || 0).toFixed(1)}</b></div></div>` : ''}
+    ${fixBox}
+    <div class="lgd-cap" id="lgCap" hidden></div>
+    <div class="lgd-sec"><span>Starters ${startingCount}/${slots.length}</span>${changed ? `<button type="button" class="lgd-link" data-reset-league="${lid}">Undo changes</button>` : ''}</div>
+    ${starters.map(p => playerRowHtml(p, lid, swapOut, swapIn, capReached)).join('')}
+    <div class="lgd-sec"><span>Bench</span></div>
+    ${bench.map(p => playerRowHtml(p, lid, swapOut, swapIn, capReached)).join('') || '<div class="ps-empty">Nobody on the bench.</div>'}
+    ${opp ? `<details class="lgd-opp"><summary>⚔ ${escapeHtml(opp.teamName)}'s lineup</summary>${oppRows}</details>` : ''}
+    <div class="lgd-tools">
+      <button type="button" class="done-toggle lgd-btn${st.doneFlag ? ' active' : ''}" data-league="${lid}">${st.doneFlag ? '✓ Marked done' : 'Mark done'}</button>
+      <a class="lgd-btn primary" href="https://sleeper.com/leagues/${lid}" target="_blank" rel="noopener">Set it in Sleeper ↗</a>
     </div>
-    <div class="slot-fill ${fillClass}">${startingCount} / ${maxStarters} starters — ${escapeHtml(slotSummary(leagueSlots(state)))}</div>
-    ${actionBanner}
-    <div class="roster-cols" id="roster-${league.league_id}"></div>
-    <div class="changes-block">
-      <div class="ch-title">Planned changes</div>
-      <div id="changes-${league.league_id}"></div>
-    </div>
-    ${state.opponent ? `
-    <button class="matchup-toggle" data-league="${league.league_id}">
-      <span>⚔ This week's matchup — vs ${escapeHtml(state.opponent.teamName)}</span><span>▾</span>
-    </button>
-    <div class="matchup-panel ${state.matchupOpen ? 'open' : ''}" id="matchup-${league.league_id}">
-      <div id="matchup-body-${league.league_id}"></div>
-    </div>` : ''}
-  `;
-  place(block);
-  renderRoster(league.league_id);
-  renderChanges(league.league_id);
-  if (state.opponent) renderMatchup(league.league_id);
+    <div class="lgd-note">Changes here are your plan. Sleeper doesn't let other apps set lineups, so make the final tap in Sleeper.</div>`;
 }
 
-function renderMatchup(lid) {
-  const state = leagueState[lid];
-  const wrap = document.getElementById(`matchup-body-${lid}`);
-  if (!wrap || !state.opponent) return;
-  const opp = state.opponent;
-  const myPts = (state.myPoints ?? 0).toFixed(2);
-  const oppPts = opp.totalPoints.toFixed(2);
-
-  const rows = opp.players.map(p => `
-    <div class="opp-player-row">
-      <span class="pos-tag" data-pos="${escapeHtml(p.pos)}">${escapeHtml(p.pos)}</span>
-      <span class="p-name">${escapeHtml(p.name)}</span>
-      <span class="p-team">${escapeHtml(p.team)}</span>
-      ${p.env ? `<span class="env-tag ${p.env.cls || envClass(p.env.implied)}" title="${escapeHtml(p.env.title || '')}">${escapeHtml(p.env.label || (p.env.implied.toFixed(1) + ' vs ' + p.env.opp))}</span>` : ''}
-      <span class="p-points">${p.points.toFixed(2)}</span>
-    </div>
-  `).join('');
-
-  wrap.innerHTML = `
-    <div class="score-row">
-      <div class="side"><div class="team-label">You</div><div class="team-score">${myPts}</div></div>
-      <div class="vs">vs</div>
-      <div class="side"><div class="team-label">${escapeHtml(opp.teamName)}</div><div class="team-score">${oppPts}</div></div>
-    </div>
-    <div class="power-hint">Their starting lineup this week — points shown are live/actual from Sleeper, so this reads 0.00 across the board before games kick off.</div>
-    ${rows}
-    <div class="opp-total-row"><span>Total</span><span>${oppPts}</span></div>
-  `;
-}
-
-board.addEventListener('click', (e) => {
+// ---------- taps on the list and on the league page ----------
+function onLeagueAction(e) {
+  const go = e.target.closest('[data-tab-go]');
+  if (go) { closeLeague(); if (window.showHQTab) showHQTab(go.dataset.tabGo, true); return; }
+  const openRow = e.target.closest('[data-open-league]');
+  if (openRow) { openLeague(openRow.dataset.openLeague); return; }
+  const reset = e.target.closest('[data-reset-league]');
+  if (reset) {
+    const st = leagueState[reset.dataset.resetLeague];
+    if (st) { st.players.forEach(p => { if (!isLockedTeam(p.team)) p.starting = p.wasStarting; }); refreshLeague(reset.dataset.resetLeague); }
+    return;
+  }
   const sw = e.target.closest('[data-swap-in]');
   if (sw) {
     const st = leagueState[sw.dataset.swapLeague];
     const pin = st && st.players.find(p => p.id === sw.dataset.swapIn);
     const pout = st && st.players.find(p => p.id === sw.dataset.swapOut);
     if (pin && pout && !isLockedTeam(pin.team) && !isLockedTeam(pout.team)) { pout.starting = false; pin.starting = true; refreshLeague(sw.dataset.swapLeague); }
-    return;
-  }
-  const head = e.target.closest('[data-expand]');
-  if (head && !e.target.closest('button, a, select, input')) {
-    const id = head.dataset.expand;
-    leagueState[id].expanded = !leagueState[id].expanded;
-    const block = head.closest('.league-block');
-    block.classList.toggle('expanded', leagueState[id].expanded);
-    block.classList.toggle('collapsed', !leagueState[id].expanded);
     return;
   }
   const doneBtn = e.target.closest('.done-toggle');
@@ -6593,57 +6778,30 @@ board.addEventListener('click', (e) => {
     refreshLeague(id);
     return;
   }
-  const sortBtn = e.target.closest('.sort-toggle');
-  if (sortBtn) {
-    const id = sortBtn.dataset.league;
-    leagueState[id].sortByEnv = !leagueState[id].sortByEnv;
-    refreshLeague(id);
-    return;
-  }
-  const matchupBtn = e.target.closest('.matchup-toggle');
-  if (matchupBtn) {
-    const id = matchupBtn.dataset.league;
-    leagueState[id].matchupOpen = !leagueState[id].matchupOpen;
-    document.getElementById(`matchup-${id}`).classList.toggle('open', leagueState[id].matchupOpen);
-    return;
-  }
   const toggleBtn = e.target.closest('.toggle-btn');
   if (toggleBtn) {
     const lid = toggleBtn.dataset.league;
-    const pid = toggleBtn.dataset.player;
     const state = leagueState[lid];
-    const player = state.players.find(p => p.id === pid);
-    if (!player) return;
-    if (isLockedTeam(player.team)) return; // game already started
-
-    if (!player.starting) {
-      const startingCount = state.players.filter(p => p.starting).length;
-      if (startingCount >= leagueSlots(state).length) {
-        showCapWarning(lid);
-        return;
-      }
+    const player = state && state.players.find(p => p.id === toggleBtn.dataset.player);
+    if (!player || isLockedTeam(player.team)) return; // game already started
+    if (!player.starting && state.players.filter(p => p.starting).length >= leagueSlots(state).length) {
+      showCapWarning(lid);
+      return;
     }
-
     player.starting = !player.starting;
     refreshLeague(lid);
   }
-});
+}
+board.addEventListener('click', onLeagueAction);
+lgBody.addEventListener('click', onLeagueAction);
 
 function showCapWarning(lid) {
-  const block = document.querySelector(`#roster-${lid}`).closest('.league-block');
-  const fillEl = block.querySelector('.slot-fill');
-  if (!fillEl) return;
-  clearTimeout(fillEl._capTimer);
-  fillEl.dataset.original = fillEl.dataset.original || fillEl.textContent;
-  fillEl.dataset.originalClass = fillEl.dataset.originalClass || fillEl.className;
-  fillEl.textContent = `Max ${leagueSlots(leagueState[lid]).length} starters — bench someone first`;
-  fillEl.className = 'slot-fill over';
-  fillEl._capTimer = setTimeout(() => {
-    fillEl.textContent = fillEl.dataset.original;
-    fillEl.className = fillEl.dataset.originalClass;
-    delete fillEl.dataset.original;
-    delete fillEl.dataset.originalClass;
-  }, 1800);
+  const el = document.getElementById('lgCap');
+  if (!el) return;
+  el.textContent = `All ${leagueSlots(leagueState[lid]).length} starter spots are full. Bench someone first.`;
+  el.hidden = false;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.hidden = true; }, 2200);
 }
 
 function renderRoster(lid) {
