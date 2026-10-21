@@ -2560,6 +2560,18 @@ button.summary-fix-count{font-size:13px!important;padding:8px 12px!important;whi
 .lg-extras .league-check-wrap{padding:0!important;margin:0!important;max-width:none!important}
 @media (max-width:760px){.lg-extras{padding:0 14px}}
 
+/* Waiver refresh bar */
+.wv-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius,14px)}
+.wv-info{min-width:0}
+.wv-title{font:800 16px 'Inter',sans-serif;color:var(--text);letter-spacing:-.02em}
+.wv-status{font:500 12.5px/1.4 'Inter',sans-serif;color:var(--text-dim);margin-top:2px}
+.wv-status:empty{display:none}
+.wv-refresh{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;min-height:42px;padding:0 16px;border:none;border-radius:999px;background:var(--grad,var(--accent));color:#fff;font:700 14px 'Inter',sans-serif;cursor:pointer;box-shadow:0 8px 18px -10px rgba(99,102,241,.95)}
+.wv-refresh svg{width:17px;height:17px}
+.wv-refresh:disabled{opacity:.75;cursor:default}
+.wv-refresh.spinning svg{animation:wvspin .9s linear infinite!important}
+@keyframes wvspin{to{transform:rotate(360deg)}}
+
 /* More = Waivers + Settings */
 .more-switch{display:flex;gap:6px;max-width:1272px;margin:14px auto 4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
 .more-switch button{flex:1;min-height:42px;border:none;border-radius:9px;background:transparent;color:var(--text-dim);font:600 14px 'Inter',sans-serif;cursor:pointer}
@@ -2869,6 +2881,10 @@ button.summary-fix-count{font-size:13px!important;padding:8px 12px!important;whi
   </div>
 
   <div class="waiver-wrap" id="waiverWrap">
+    <div class="wv-bar">
+      <div class="wv-info"><div class="wv-title">Waiver wire</div><div class="wv-status" id="wvStatus" role="status"></div></div>
+      <button type="button" class="wv-refresh" id="wvRefresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg><span>Refresh</span></button>
+    </div>
     <div class="waiver-card fw-card">
       <div class="waiver-head fw-head">
         <div>
@@ -3954,6 +3970,7 @@ loadBtn.addEventListener('click', async () => {
     setStatus('Loading rosters and current lineups…');
 
     await Promise.all(allLeagues.map(loadLeagueState));
+    waiverCheckedAt = Date.now(); waiverLastDiff = null;
 
     setStatus('');
     renderBoard();
@@ -4475,9 +4492,11 @@ function renderActiveTab() {
   }
 }
 // Draw the tab right after it appears, so the switch itself feels instant.
-document.addEventListener('hq:tab', () => {
+document.addEventListener('hq:tab', e => {
   if (!currentUser) return;
   requestAnimationFrame(() => setTimeout(() => { renderActiveTab(); updateTabBadges(); }, 0));
+  // Opening Waivers re-checks the wire if it's been a while.
+  if (e.detail === 'waivers' && Date.now() - waiverCheckedAt > WAIVER_STALE_MS) refreshWaivers();
 });
 // Redraw a single league card after you change something in it.
 function refreshLeague(lid) {
@@ -6154,6 +6173,75 @@ document.getElementById('fwPos').addEventListener('click', e => {
 });
 
 // ================= WAIVERS =================
+// Rosters change all week (drops, free-agent pickups, waiver runs), so the wire can be
+// re-checked without reloading everything: re-fetch each league's rosters and this week's
+// transactions, and fully reload a league only when your own roster changed.
+const WAIVER_STALE_MS = 5 * 60 * 1000;
+let waiverCheckedAt = 0, waiverRefreshing = false, waiverLastDiff = null;
+function renderWaiverBar() {
+  const status = document.getElementById('wvStatus'), btn = document.getElementById('wvRefresh');
+  if (!status || !btn) return;
+  btn.disabled = waiverRefreshing;
+  btn.classList.toggle('spinning', waiverRefreshing);
+  btn.querySelector('span').textContent = waiverRefreshing ? 'Checking…' : 'Refresh';
+  if (waiverRefreshing) { status.textContent = 'Checking every league for drops and pickups…'; return; }
+  if (!waiverCheckedAt) { status.textContent = ''; return; }
+  const when = new Date(waiverCheckedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  const d = waiverLastDiff;
+  const changes = !d ? '' : (d.dropped || d.added)
+    ? ` · ${d.dropped ? `${d.dropped} dropped (now free)` : ''}${d.dropped && d.added ? ', ' : ''}${d.added ? `${d.added} picked up` : ''}${d.mine ? ` · your roster changed in ${d.mine} league${d.mine === 1 ? '' : 's'}` : ''}`
+    : ' · no changes since last check';
+  status.textContent = `Checked ${when}${changes}${d && d.failed ? ` · ${d.failed} league${d.failed === 1 ? '' : 's'} didn't answer` : ''}`;
+}
+async function refreshWaivers() {
+  if (!currentUser || waiverRefreshing) return;
+  waiverRefreshing = true;
+  renderWaiverBar();
+  const week = weekSelect.value;
+  const diff = { added: 0, dropped: 0, mine: 0, failed: 0 };
+  const leagues = allLeagues.filter(l => selectedLeagueIds.has(l.league_id) && leagueState[l.league_id] && leagueState[l.league_id].rosteredIds);
+  try {
+    await runPool(leagues, 6, async lg => {
+      const st = leagueState[lg.league_id];
+      try {
+        const [rosters, tx] = await Promise.all([
+          fetch(`${API}/league/${lg.league_id}/rosters`).then(r => r.ok ? r.json() : null),
+          fetch(`${API}/league/${lg.league_id}/transactions/${week}`).then(r => r.ok ? r.json() : []).catch(() => [])
+        ]);
+        if (!Array.isArray(rosters)) throw new Error('no rosters');
+        const ids = new Set();
+        rosters.forEach(r => [r.players, r.reserve, r.taxi].forEach(arr => (arr || []).forEach(id => ids.add(String(id)))));
+        ids.forEach(id => { if (!st.rosteredIds.has(id)) diff.added++; });
+        st.rosteredIds.forEach(id => { if (!ids.has(id)) diff.dropped++; });
+        const mineNow = (rosters.find(r => r.owner_id === currentUser.user_id) || {}).players || [];
+        const mineBefore = new Set((((st.allRosters || []).find(r => r.owner_id === currentUser.user_id)) || {}).players || []);
+        if (mineNow.length !== mineBefore.size || mineNow.some(id => !mineBefore.has(id))) {
+          // Your roster changed (a claim went through): reload this league, keep what you set on it.
+          diff.mine++;
+          const keep = { doneFlag: st.doneFlag, weekly: st.weekly, allTrades: st.allTrades, byeOpp: st.byeOpp, myTrades: st.myTrades };
+          await loadLeagueState(lg);
+          const fresh = leagueState[lg.league_id];
+          Object.entries(keep).forEach(([k, v]) => { if (v !== undefined && k !== 'myTrades') fresh[k] = v; });
+          if (keep.myTrades && fresh.myTrades) fresh.myTrades = { ...keep.myTrades, ...fresh.myTrades };
+        } else {
+          st.rosteredIds = ids;
+          st.allRosters = rosters;
+          st.myTransactions = (Array.isArray(tx) ? tx : [])
+            .filter(t => (t.type === 'waiver' || t.type === 'free_agent') && (t.roster_ids || []).includes(st.myRosterId));
+        }
+      } catch (err) { diff.failed++; }
+    });
+  } finally {
+    waiverRefreshing = false;
+    waiverCheckedAt = Date.now();
+    waiverLastDiff = diff;
+    tradeIdeasMemo = { sig: '', ideas: [] };
+    renderBoard();
+    renderWaiverBar();
+  }
+}
+document.getElementById('wvRefresh').addEventListener('click', () => refreshWaivers());
+
 const CLAIMS_STORAGE_KEY = 'fantasy-hq-waiver-claims-v1';
 let trackedClaims = [];
 try {
@@ -6216,6 +6304,7 @@ function renderWaivers() {
   if (!wrap) return;
   wrap.style.display = currentUser ? 'block' : 'none';
   if (!currentUser) return;
+  renderWaiverBar();
   renderFlockWaivers();
 
   // Waiver watch: group by free agent across selected leagues
