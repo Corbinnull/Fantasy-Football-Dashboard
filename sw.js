@@ -2,7 +2,7 @@
 // - The app itself: network first, so updates show up right away; falls back to the saved copy offline.
 // - Sleeper's big player list (~10 MB): kept for a day so the app opens fast.
 // - Everything else (scores, rosters, matchups) always comes live from the network.
-const VERSION = 'fhq-v3';
+const VERSION = 'fhq-v4';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'];
 const PLAYERS_URL = 'https://api.sleeper.app/v1/players/nfl';
 const PLAYERS_MAX_AGE = 24 * 60 * 60 * 1000;

@@ -2421,6 +2421,8 @@ body.is-offline .offline-bar{display:block}
 .ps-sheet{position:fixed;inset:0;z-index:80;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
 .ps-sheet[hidden]{display:none}
 body.ps-open{overflow:hidden}
+/* Nothing behind the search screen needs to be laid out or painted while it's open. */
+body.ps-open > :not(#psSheet):not(script){display:none!important}
 .ps-head{display:flex;gap:8px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);max-width:860px;width:100%;margin:0 auto}
 .ps-head input{flex:1;min-width:0;background:var(--input);color:var(--text);border:1px solid var(--line-strong);border-radius:12px;padding:12px 14px;font:500 16px 'Inter',sans-serif;outline:none}
 .ps-close{background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 14px;font:600 14px 'Inter',sans-serif;cursor:pointer;min-height:44px}
@@ -2770,10 +2772,9 @@ body.ps-open{overflow:hidden}
 </nav>
 <div class="ps-sheet" id="psSheet" role="dialog" aria-modal="true" aria-label="Search a player" hidden>
   <div class="ps-head">
-    <input id="psInput" type="search" list="psNames" placeholder="Search any player…" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="search">
+    <input id="psInput" type="search" placeholder="Search any player…" autocomplete="off" autocapitalize="words" autocorrect="off" spellcheck="false" enterkeyhint="search">
     <button type="button" class="ps-close" id="psClose">Close</button>
   </div>
-  <datalist id="psNames"></datalist>
   <div class="ps-body" id="psBody"></div>
 </div>
 <main class="hq-panels">
@@ -4220,7 +4221,7 @@ function refreshLeague(lid) {
   updateLeagueSummary();
   updateTabBadges();
   updateAppbar();
-  if (typeof renderPlayerSheet === 'function') renderPlayerSheet();
+  if (typeof renderPlayerSheet === 'function') { psInvalidate(); renderPlayerSheet(); }
 }
 function renderLineupsBoard() {
   const selected = allLeagues.filter(l => selectedLeagueIds.has(l.league_id));
@@ -6748,11 +6749,16 @@ function renderChanges(lid) {
 // One tap from anywhere (🔎 in the top bar): every selected league where a player is
 // starting or benched for you, or starting or benched against you this week.
 // Unlike the old Game Day box, this ignores the game filter so nobody goes missing.
-let psPicked = null;
+let psPicked = null, psScrollY = 0, psTimer = 0;
 const psSheet = document.getElementById('psSheet');
 const psInput = document.getElementById('psInput');
 const psBody = document.getElementById('psBody');
 function psIsOpen() { return !psSheet.hidden; }
+// The list only changes when your leagues or lineups do, so build it once and reuse it
+// for every letter you type.
+let psAll = null;
+function psInvalidate() { psAll = null; }
+function psPlayers() { return psAll || (psAll = psCollect()); }
 function psCollect() {
   const byId = {};
   const add = (p, lg, kind, opp) => {
@@ -6771,7 +6777,7 @@ function psCollect() {
       (o.bench || []).forEach(p => add(p, lg, 'oppBench', o.teamName));
     }
   });
-  return Object.values(byId).map(e => ({ ...e, total: e.start.length + e.bench.length + e.vs.length + e.oppBench.length }));
+  return Object.values(byId).map(e => ({ ...e, norm: normalizeFantasyName(e.name), total: e.start.length + e.bench.length + e.vs.length + e.oppBench.length }));
 }
 function psRows(list, cls, label) {
   if (!list.length) return '';
@@ -6809,9 +6815,7 @@ function renderPlayerSheet() {
     psBody.innerHTML = '<div class="ps-empty">Your leagues are still loading. Give it a second.</div>';
     return;
   }
-  const all = psCollect();
-  document.getElementById('psNames').innerHTML = [...all].sort((a, b) => b.total - a.total || a.name.localeCompare(b.name))
-    .map(e => `<option value="${escapeHtml(e.name)}">${escapeHtml(e.pos)} · ${escapeHtml(e.team)}</option>`).join('');
+  const all = psPlayers();
   const q = normalizeFantasyName(psInput.value);
   const pick = list => `<div class="ps-picks">${list.map(e => `<button type="button" class="ps-pick${psPicked === e.id ? ' on' : ''}" data-ps-id="${e.id}" data-ps-name="${escapeHtml(e.name)}">${escapeHtml(e.name)} <span class="ps-meta">${e.start.length ? '🟢' + e.start.length : ''}${e.vs.length ? ' 🔴' + e.vs.length : ''}</span></button>`).join('')}</div>`;
   if (!q) {
@@ -6820,8 +6824,8 @@ function renderPlayerSheet() {
     psBody.innerHTML = `<div class="ps-hint">Type a name, or tap one of the players who matter most to your week:</div>${pick(top)}`;
     return;
   }
-  const rank = e => { const n = normalizeFantasyName(e.name); return n === q ? 0 : n.startsWith(q) ? 1 : 2; };
-  const matches = all.filter(e => normalizeFantasyName(e.name).includes(q)).sort((a, b) => rank(a) - rank(b) || b.total - a.total || a.name.localeCompare(b.name));
+  const rank = e => e.norm === q ? 0 : e.norm.startsWith(q) ? 1 : 2;
+  const matches = all.filter(e => e.norm.includes(q)).sort((a, b) => rank(a) - rank(b) || b.total - a.total || a.name.localeCompare(b.name));
   if (!matches.length) {
     psBody.innerHTML = `<div class="ps-empty">“${escapeHtml(psInput.value.trim())}” isn't on your roster or this week's opponents' rosters in your selected leagues.</div>`;
     return;
@@ -6831,18 +6835,22 @@ function renderPlayerSheet() {
 }
 function openPlayerSheet(prefill) {
   if (!psIsOpen()) {
+    psScrollY = window.scrollY;
+    psInvalidate();
     psSheet.hidden = false;
     document.body.classList.add('ps-open');
     try { history.pushState({ ps: 1 }, ''); } catch (_) {}
   }
   if (typeof prefill === 'string') { psInput.value = prefill; psPicked = null; }
+  // Focus during the tap itself; iPhones only raise the keyboard that way.
+  try { psInput.focus({ preventScroll: true }); } catch (_) { psInput.focus(); }
   renderPlayerSheet();
-  setTimeout(() => psInput.focus(), 30);
 }
 function closePlayerSheet(fromBack) {
   if (!psIsOpen()) return;
   psSheet.hidden = true;
   document.body.classList.remove('ps-open');
+  window.scrollTo(0, psScrollY);
   psInput.blur();
   if (!fromBack && history.state && history.state.ps) history.back();
 }
@@ -6854,7 +6862,11 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && psIsOpen()) closePlayerSheet();
   else if (e.key === '/' && !psIsOpen() && !/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '')) { e.preventDefault(); openPlayerSheet(); }
 });
-psInput.addEventListener('input', () => { psPicked = null; renderPlayerSheet(); });
+psInput.addEventListener('input', () => {
+  psPicked = null;
+  clearTimeout(psTimer);
+  psTimer = setTimeout(renderPlayerSheet, 120);
+});
 psInput.addEventListener('keydown', e => { if (e.key === 'Enter') psInput.blur(); });
 psBody.addEventListener('click', e => {
   const b = e.target.closest('[data-ps-id]'); if (!b) return;
@@ -6865,7 +6877,7 @@ psBody.addEventListener('click', e => {
 });
 // Keep the open sheet current when scores refresh or you make lineup changes.
 const _renderBoardBeforeSearch = renderBoard;
-renderBoard = function () { _renderBoardBeforeSearch.apply(this, arguments); renderPlayerSheet(); };
+renderBoard = function () { _renderBoardBeforeSearch.apply(this, arguments); psInvalidate(); renderPlayerSheet(); };
 </script>
 
 <script>
