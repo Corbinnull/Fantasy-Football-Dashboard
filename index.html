@@ -2560,6 +2560,58 @@ button.summary-fix-count{font-size:13px!important;padding:8px 12px!important;whi
 .lg-extras .league-check-wrap{padding:0!important;margin:0!important;max-width:none!important}
 @media (max-width:760px){.lg-extras{padding:0 14px}}
 
+/* Finances */
+.fin-wrap{max-width:900px;margin:12px auto 0;padding:0 24px}
+body:not(.hq-loaded) .fin-wrap{display:none}
+.fin-summary{display:flex;flex-direction:column;gap:8px}
+.fin-net{display:flex;flex-direction:column;padding:16px 18px;border-radius:var(--radius,16px);background:var(--grad-soft,transparent),var(--surface);border:1px solid rgba(139,123,255,.25)}
+.fin-net span{font:700 12px 'Inter',sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--text-dim)}
+.fin-net b{font:800 34px 'Inter',sans-serif;letter-spacing:-.03em;margin-top:2px}
+.fin-net.pos b{color:var(--good)} .fin-net.neg b{color:var(--bad)}
+.fin-net small{font:500 13px 'Inter',sans-serif;color:var(--text-dim);margin-top:2px}
+.fin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.fin-stats>div{display:flex;flex-direction:column;padding:10px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);min-width:0}
+.fin-stats span{font:600 11.5px 'Inter',sans-serif;color:var(--text-dim)}
+.fin-stats b{font:800 19px 'Inter',sans-serif;letter-spacing:-.02em;margin:2px 0;color:var(--text);font-variant-numeric:tabular-nums}
+.fin-stats small{font:500 11.5px 'Inter',sans-serif;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fin-wrap .pos{color:var(--good)!important} .fin-wrap .neg{color:var(--bad)!important} .fin-wrap .dim{color:var(--text-dim)!important}
+.fin-note{font:500 12.5px/1.5 'Inter',sans-serif;color:var(--text-dim);margin:12px 2px}
+.fin-list{display:flex;flex-direction:column;gap:8px;padding-bottom:12px}
+.fin-row{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius,16px)}
+.fin-row.money{border-color:color-mix(in srgb,var(--good) 40%,var(--line))}
+.fin-row.hiddenlg{opacity:.6}
+.fin-row>summary{display:flex;align-items:center;gap:10px;padding:13px 14px;list-style:none;cursor:pointer;min-height:62px}
+.fin-row>summary::-webkit-details-marker{display:none}
+.fin-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.fin-name{font:700 15px 'Inter',sans-serif;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fin-main small{font:500 12.5px 'Inter',sans-serif;color:var(--text-dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fin-chip{flex-shrink:0;font:700 11px 'Inter',sans-serif;border-radius:999px;padding:3px 8px;background:var(--bad-soft)}
+.fin-proj{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end}
+.fin-proj small{font:600 10.5px 'Inter',sans-serif;color:var(--text-dim)}
+.fin-proj b{font:800 17px 'Inter',sans-serif;font-variant-numeric:tabular-nums}
+.fin-edit{padding:0 14px 14px;border-top:1px solid var(--line)}
+.fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.fin-field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fin-field span{font:600 12px 'Inter',sans-serif;color:var(--text-dim)}
+.fin-field input[type=number]{width:100%;min-height:44px;padding:0 12px;font:700 16px 'Inter',sans-serif!important}
+.fin-field small{font:500 11px 'Inter',sans-serif;color:var(--text-dim)}
+.fin-paid{justify-content:flex-start}
+.fin-paid input[type=checkbox]{appearance:none;-webkit-appearance:none;width:50px;height:30px;margin-top:6px;border-radius:999px;background:var(--line-strong)!important;border:none!important;position:relative;cursor:pointer}
+.fin-paid input[type=checkbox]::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.35);transition:transform .15s}
+.fin-paid input[type=checkbox]:checked{background:var(--grad-good,var(--good))!important}
+.fin-paid input[type=checkbox]:checked::after{transform:translateX(20px)}
+.fin-calc{margin-top:12px;font:600 13px 'Inter',sans-serif;color:var(--text)}
+.fin-reset{margin-top:10px;background:none;border:none;color:var(--info2,var(--accent));font:600 13px 'Inter',sans-serif;cursor:pointer;padding:6px 0}
+.fin-free{background:transparent}
+.fin-free>summary{cursor:pointer;list-style:none;padding:12px 4px;font:700 14px 'Inter',sans-serif;color:var(--text-dim)}
+.fin-free>summary::-webkit-details-marker{display:none}
+.fin-free>summary small{font-weight:500;margin-left:6px}
+.fin-free .fin-row{margin-bottom:8px}
+.lgd-money{margin-top:8px;font:600 13.5px 'Inter',sans-serif;color:var(--text-dim)}
+.lgd-money .pos{color:var(--good)} .lgd-money .neg{color:var(--bad)}
+.more-switch button{font-size:13.5px!important;padding:0 6px}
+@media (max-width:760px){.fin-wrap{padding:0 14px}.fin-stats{grid-template-columns:1fr 1fr}}
+
 /* League picker */
 .lg-toolbar{display:flex;gap:8px;align-items:stretch;margin-bottom:10px}
 .lg-toolbar .ps-open-btn{flex:1;margin:0!important;min-width:0}
@@ -3178,9 +3230,16 @@ body.lp-open > :not(#lpSheet):not(script){display:none!important}
     <div class="root-scope" id="rootScope"></div>
     <div class="gd-grid" id="gdGrid"></div></section>
   <section class="hq-panel" id="panel-trades" role="tabpanel"><div class="tab-empty">Load your leagues to find trades. Paste Flock rankings in Settings first.</div></section>
-  <section class="hq-panel" id="panel-waivers" role="tabpanel"><div class="more-switch"><button type="button" data-tab="waivers">🧲 Waivers</button><button type="button" data-tab="settings">⚙️ Settings &amp; injuries</button></div><div class="tab-empty">Load your leagues to check the waiver wire and track claims.</div></section>
+  <section class="hq-panel" id="panel-waivers" role="tabpanel"><div class="more-switch"><button type="button" data-tab="waivers">🧲 Waivers</button><button type="button" data-tab="finances">💰 Finances</button><button type="button" data-tab="settings">⚙️ Settings</button></div><div class="tab-empty">Load your leagues to check the waiver wire and track claims.</div></section>
+  <section class="hq-panel" id="panel-finances" role="tabpanel"><div class="more-switch"><button type="button" data-tab="waivers">🧲 Waivers</button><button type="button" data-tab="finances">💰 Finances</button><button type="button" data-tab="settings">⚙️ Settings</button></div><div class="tab-empty">Load your leagues to track buy-ins and payouts.</div>
+    <div class="fin-wrap" id="finWrap">
+      <div class="fin-summary" id="finSummary"></div>
+      <div class="fin-note">Buy-ins are guessed from league names like “PAID $100”, and prize pools from buy-in × teams with a 60/30/10 split. Tap a league to fix anything. “On track for” is what you'd win if the season ended today, plus weekly high scores you've already won. Saved on this phone only.</div>
+      <div class="fin-list" id="finList"></div>
+    </div>
+  </section>
   <section class="hq-panel" id="panel-settings" role="tabpanel">
-    <div class="more-switch"><button type="button" data-tab="waivers">🧲 Waivers</button><button type="button" data-tab="settings">⚙️ Settings &amp; injuries</button></div>
+    <div class="more-switch"><button type="button" data-tab="waivers">🧲 Waivers</button><button type="button" data-tab="finances">💰 Finances</button><button type="button" data-tab="settings">⚙️ Settings</button></div>
     <div class="settings-card" id="settingsTheme">
       <div class="settings-title">🎨 Theme</div>
       <div class="settings-sub">Pick a look. It switches instantly and is remembered on this device.</div>
@@ -3246,15 +3305,17 @@ body.lp-open > :not(#lpSheet):not(script){display:none!important}
   document.getElementById('panel-lineups').appendChild(extras);
 
   const TAB_KEY = 'fantasy-hq-tab-v1';
-  const tabs = ['lineups', 'gameday', 'trades', 'waivers', 'settings'];
+  const tabs = ['lineups', 'gameday', 'trades', 'waivers', 'finances', 'settings'];
+  const MORE_TABS = ['waivers', 'finances', 'settings'];
   let lastMore = 'waivers';
-  try { if (localStorage.getItem(TAB_KEY) === 'settings') lastMore = 'settings'; } catch (_) {}
+  const MORE_KEY = 'fantasy-hq-more-tab-v1';   // which part of More you used last
+  try { const t = localStorage.getItem(MORE_KEY) || localStorage.getItem(TAB_KEY); if (MORE_TABS.includes(t)) lastMore = t; } catch (_) {}
   function show(tab, push) {
     if (tab === 'more') tab = lastMore;
     if (!tabs.includes(tab)) tab = 'lineups';
-    if (tab === 'waivers' || tab === 'settings') lastMore = tab;
+    if (MORE_TABS.includes(tab)) { lastMore = tab; try { localStorage.setItem(MORE_KEY, tab); } catch (_) {} }
     document.querySelectorAll('[data-tab]').forEach(b => {
-      const on = b.dataset.tab === tab || (b.dataset.tab === 'more' && (tab === 'waivers' || tab === 'settings'));
+      const on = b.dataset.tab === tab || (b.dataset.tab === 'more' && MORE_TABS.includes(tab));
       b.classList.toggle('on', on); b.setAttribute('aria-selected', on ? 'true' : 'false');
     });
     tabs.forEach(t => document.getElementById('panel-' + t).classList.toggle('on', t === tab));
@@ -3377,7 +3438,15 @@ function leagueAdjustedLine(name, pos, league) {
   const base = fantasyLineForName(name);
   return base == null ? null : +base.toFixed(1);
 }
-const START_WEEK = 5;
+const START_WEEK = 8;
+// Each NFL week runs Tuesday → Monday night, so a new week starts on the Tuesday after Monday
+// Night Football. Week 1 of 2026 started Tuesday, Sept 8. Sleeper's own week number can lag
+// a day behind, so the app opens on whichever is later.
+const SEASON_WEEK1_TUESDAY = new Date(2026, 8, 8);
+function weekFromDate(d = new Date()) {
+  const w = Math.floor((d - SEASON_WEEK1_TUESDAY) / (7 * 24 * 60 * 60 * 1000)) + 1;
+  return Math.min(18, Math.max(1, w));
+}
 
 const INJURY_STORAGE_KEY = 'fantasy-hq-injury-designations-v1';
 const INJURY_STATUSES = ['Healthy', 'Questionable', 'Doubtful', 'Out'];
@@ -3824,7 +3893,7 @@ for (let w = 1; w <= 18; w++) {
   const o = document.createElement('option'); o.value = w; o.textContent = 'Week ' + w;
   weekSelect.appendChild(o);
 }
-weekSelect.value = String(START_WEEK);
+weekSelect.value = String(Math.max(START_WEEK, weekFromDate()));
 weekSelect.addEventListener('change', () => { rebuildFantasyLines(); updateLinesStatus(); });
 fetch('https://api.sleeper.app/v1/state/nfl').then(r => r.ok ? r.json() : null).then(st => {
   if (!st || currentUser) return;
@@ -4094,7 +4163,7 @@ loadBtn.addEventListener('click', async () => {
       try { renderBoard(); } catch (e) { console.error('Post-schedule render failed', e); }
       if (liveOn) setLive(true);
     });
-    loadRecordHistory().then(() => renderRecordChart());
+    loadRecordHistory().then(() => { renderRecordChart(); if (activeTab() === 'finances') renderFinances(); });
 
   } catch (err) {
     if (err.message === 'not_found') {
@@ -4403,6 +4472,9 @@ async function loadRecordHistory() {
     const a = +mine.points || 0, b = +opp.points || 0;
     if (!a && !b) return;
     st.weekly[w] = a > b ? 'W' : a < b ? 'L' : 'T';
+    // Top score of the whole league that week (for weekly high-score prizes).
+    st.weeklyHigh = st.weeklyHigh || {};
+    st.weeklyHigh[w] = a > 0 && a >= Math.max(...ms.map(m => +m.points || 0));
   });
   recordLoading = false;
 }
@@ -4604,6 +4676,8 @@ function renderActiveTab() {
     renderTradeFinder();
   } else if (tab === 'waivers') {
     renderWaivers();
+  } else if (tab === 'finances') {
+    renderFinances();
   } else if (tab === 'settings') {
     renderInjuryDesignations();
   }
@@ -6419,7 +6493,7 @@ async function refreshWaivers() {
         if (mineNow.length !== mineBefore.size || mineNow.some(id => !mineBefore.has(id))) {
           // Your roster changed (a claim went through): reload this league, keep what you set on it.
           diff.mine++;
-          const keep = { doneFlag: st.doneFlag, weekly: st.weekly, allTrades: st.allTrades, byeOpp: st.byeOpp, myTrades: st.myTrades };
+          const keep = { doneFlag: st.doneFlag, weekly: st.weekly, weeklyHigh: st.weeklyHigh, allTrades: st.allTrades, byeOpp: st.byeOpp, myTrades: st.myTrades };
           await loadLeagueState(lg);
           const fresh = leagueState[lg.league_id];
           Object.entries(keep).forEach(([k, v]) => { if (v !== undefined && k !== 'myTrades') fresh[k] = v; });
@@ -7157,6 +7231,7 @@ function renderLeagueDetail() {
   lgBody.innerHTML = `
     <div class="lgd-title">${escapeHtml(lg.name)}</div>
     <div class="lgd-meta">${recordText(st)}${opp ? ` · vs ${escapeHtml(opp.teamName)}` : ''}</div>
+    ${(() => { const f = finFor(lg); return f.buyIn > 0 ? `<div class="lgd-money">💰 $${f.buyIn} buy-in${f.paid ? '' : ' · <b class="neg">unpaid</b>'} · on track for <b class="${f.projected > 0 ? 'pos' : ''}">${money(f.projected)}</b></div>` : ''; })()}
     ${opp ? `<div class="lgd-score"><div><span>You</span><b>${(+st.myPoints || 0).toFixed(1)}</b></div><i>–</i><div><span>${escapeHtml(opp.teamName)}</span><b>${(+opp.totalPoints || 0).toFixed(1)}</b></div></div>` : ''}
     ${fixBox}
     <div class="lgd-cap" id="lgCap" hidden></div>
@@ -7172,6 +7247,112 @@ function renderLeagueDetail() {
     <div class="lgd-note">Changes here are your plan. Sleeper doesn't let other apps set lineups, so make the final tap in Sleeper.</div>
     <button type="button" class="lgd-hide" data-hide-league="${lid}">Hide this league</button>`;
 }
+
+// ---------- Finances: buy-ins, prize pools, projected payouts ----------
+const FIN_KEY = 'fantasy-hq-finances-v1';
+let finData = {};
+try { const f = JSON.parse(localStorage.getItem(FIN_KEY) || '{}'); if (f && typeof f === 'object') finData = f; } catch (_) {}
+const finOpen = new Set();
+function finSave() { try { localStorage.setItem(FIN_KEY, JSON.stringify(finData)); } catch (_) {} }
+function money(n) { n = Math.round(Number(n) || 0); return (n < 0 ? '−$' : '$') + Math.abs(n).toLocaleString(); }
+// "✅✅5️⃣9️⃣9️⃣ PAID $50 Redraft League" → 50
+function guessBuyIn(name) { const m = String(name || '').match(/\$\s*(\d{1,5})(?!\d)/); return m ? +m[1] : 0; }
+function finFor(lg) {
+  const lid = lg.league_id, st = leagueState[lid] || {}, saved = finData[lid] || {};
+  const teams = (st.allRosters || []).length || Number(lg.total_rosters) || 12;
+  const buyIn = saved.buyIn ?? guessBuyIn(lg.name);
+  const pool = saved.pool ?? buyIn * teams;
+  const p1 = saved.p1 ?? Math.round(pool * 0.6), p2 = saved.p2 ?? Math.round(pool * 0.3), p3 = saved.p3 ?? Math.round(pool * 0.1);
+  const weekly = saved.weekly ?? 0;
+  const po = (st.allRosters && !st.noRoster) ? playoffInfo(lid) : null;
+  const rank = po ? po.rank : null;
+  const placeMoney = rank === 1 ? p1 : rank === 2 ? p2 : rank === 3 ? p3 : 0;
+  const highs = Object.values(st.weeklyHigh || {}).filter(Boolean).length;
+  const weeklyWon = highs * weekly;
+  return { lid, lg, teams, buyIn, pool, p1, p2, p3, weekly, paid: !!saved.paid, received: saved.received ?? 0,
+    rank, n: po ? po.n : teams, placeMoney, highs, weeklyWon, projected: placeMoney + weeklyWon,
+    guessed: saved.buyIn == null && buyIn > 0, edited: Object.keys(saved).some(k => k !== 'paid' && k !== 'received') };
+}
+function renderFinances() {
+  const list = document.getElementById('finList'), sum = document.getElementById('finSummary');
+  if (!list || !currentUser) return;
+  const rows = allLeagues.map(finFor);
+  const paidLeagues = rows.filter(r => r.buyIn > 0), free = rows.filter(r => !(r.buyIn > 0));
+  const spent = paidLeagues.reduce((a, r) => a + r.buyIn, 0);
+  const projected = rows.reduce((a, r) => a + r.projected, 0);
+  const received = rows.reduce((a, r) => a + (+r.received || 0), 0);
+  const owed = paidLeagues.filter(r => !r.paid);
+  const net = projected - spent;
+  const inMoney = rows.filter(r => r.placeMoney > 0).length;
+  sum.innerHTML = `
+    <div class="fin-net ${net >= 0 ? 'pos' : 'neg'}"><span>Projected profit</span><b>${net >= 0 ? '+' : ''}${money(net)}</b>
+      <small>${inMoney} league${inMoney === 1 ? '' : 's'} in the money right now</small></div>
+    <div class="fin-stats">
+      <div><span>Spent</span><b>${money(spent)}</b><small>${paidLeagues.length} paid league${paidLeagues.length === 1 ? '' : 's'}</small></div>
+      <div><span>On track for</span><b class="pos">${money(projected)}</b><small>if it ended today</small></div>
+      <div><span>Received</span><b>${money(received)}</b><small>net ${money(received - spent)}</small></div>
+      <div><span>Still owe</span><b class="${owed.length ? 'neg' : ''}">${money(owed.reduce((a, r) => a + r.buyIn, 0))}</b><small>${owed.length ? `${owed.length} unpaid` : 'all paid ✓'}</small></div>
+    </div>`;
+  const field = (r, key, label, val, hint) => `<label class="fin-field"><span>${label}</span>
+    <input type="number" inputmode="decimal" min="0" step="1" data-fin-lid="${r.lid}" data-fin-key="${key}" value="${val ?? ''}" placeholder="0">${hint ? `<small>${hint}</small>` : ''}</label>`;
+  const rowHtml = r => {
+    const place = r.rank ? `${ordinal(r.rank)} of ${r.n}` : 'no standings yet';
+    const right = r.projected > 0 ? `<b class="pos">${money(r.projected)}</b>` : `<b class="dim">$0</b>`;
+    return `<details class="fin-row${r.placeMoney > 0 ? ' money' : ''}${selectedLeagueIds.has(r.lid) ? '' : ' hiddenlg'}" data-fin-row="${r.lid}"${finOpen.has(r.lid) ? ' open' : ''}>
+      <summary>
+        <span class="fin-main"><span class="fin-name">${escapeHtml(r.lg.name)}</span>
+          <small>${r.buyIn > 0 ? `${money(r.buyIn)} buy-in · ` : 'Free · '}${place}${r.highs && r.weekly ? ` · ${r.highs}× weekly high` : ''}${selectedLeagueIds.has(r.lid) ? '' : ' · hidden'}</small></span>
+        ${r.buyIn > 0 && !r.paid ? '<span class="fin-chip neg">Unpaid</span>' : ''}
+        <span class="fin-proj"><small>on track</small>${right}</span>
+      </summary>
+      <div class="fin-edit">
+        <div class="fin-grid">
+          ${field(r, 'buyIn', 'Buy-in', r.buyIn, r.guessed ? 'from the league name' : '')}
+          <label class="fin-field fin-paid"><span>Paid?</span><input type="checkbox" data-fin-lid="${r.lid}" data-fin-key="paid" ${r.paid ? 'checked' : ''}></label>
+          ${field(r, 'pool', 'Prize pool', r.pool, `${r.teams} teams × ${money(r.buyIn)}`)}
+          ${field(r, 'weekly', 'Weekly high score', r.weekly, r.highs ? `you've had the top score ${r.highs}×` : 'per week, if your league pays it')}
+          ${field(r, 'p1', '1st place', r.p1)}
+          ${field(r, 'p2', '2nd place', r.p2)}
+          ${field(r, 'p3', '3rd place', r.p3)}
+          ${field(r, 'received', 'Received so far', r.received || '', 'money already paid out to you')}
+        </div>
+        <div class="fin-calc">If it ended today: ${r.rank ? `${ordinal(r.rank)} → ${money(r.placeMoney)}` : '—'}${r.weekly ? ` · weekly highs ${r.highs} × ${money(r.weekly)} = ${money(r.weeklyWon)}` : ''}</div>
+        ${r.edited ? `<button type="button" class="fin-reset" data-fin-reset="${r.lid}">Reset to the guessed amounts</button>` : ''}
+      </div>
+    </details>`;
+  };
+  const sorted = paidLeagues.sort((a, b) => b.projected - a.projected || b.buyIn - a.buyIn || a.lg.name.localeCompare(b.lg.name));
+  list.innerHTML = (sorted.length ? sorted.map(rowHtml).join('') : '<div class="xp-empty">No buy-ins found in your league names. Open a league below to enter one.</div>')
+    + (free.length ? `<details class="fin-free"${finOpen.has('free') ? ' open' : ''} data-fin-free><summary>${free.length} free league${free.length === 1 ? '' : 's'} <small>tap to add a buy-in</small></summary>${free.map(rowHtml).join('')}</details>` : '');
+}
+document.getElementById('finWrap').addEventListener('change', e => {
+  const el = e.target.closest('[data-fin-lid]'); if (!el) return;
+  const lid = el.dataset.finLid, key = el.dataset.finKey;
+  const rec = finData[lid] = finData[lid] || {};
+  if (key === 'paid') rec.paid = el.checked;
+  else if (el.value === '') delete rec[key];
+  else rec[key] = Math.max(0, Number(el.value) || 0);
+  // A new buy-in or pool resets the split that was based on it, unless you typed the split yourself.
+  if (key === 'buyIn' || key === 'pool') ['p1', 'p2', 'p3'].forEach(k => { if (rec[k] != null && !rec['_' + k]) delete rec[k]; });
+  if (key === 'buyIn') delete rec.pool;
+  if (['p1', 'p2', 'p3'].includes(key)) rec['_' + key] = true;
+  if (!Object.keys(rec).length) delete finData[lid];
+  finSave();
+  renderFinances();
+});
+document.getElementById('finWrap').addEventListener('click', e => {
+  const r = e.target.closest('[data-fin-reset]'); if (!r) return;
+  const keep = finData[r.dataset.finReset] || {};
+  finData[r.dataset.finReset] = { ...(keep.paid ? { paid: true } : {}), ...(keep.received ? { received: keep.received } : {}) };
+  finSave(); renderFinances();
+});
+// Keep opened leagues open when the list redraws.
+document.getElementById('finList').addEventListener('toggle', e => {
+  const d = e.target; if (!d.matches) return;
+  const id = d.matches('[data-fin-free]') ? 'free' : d.dataset.finRow;
+  if (!id) return;
+  if (d.open) finOpen.add(id); else finOpen.delete(id);
+}, true);
 
 // ---------- league picker (full screen) ----------
 const lpSheet = document.getElementById('lpSheet');
